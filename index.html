@@ -1,1 +1,1943 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Credencial Ministerial — Emissão Oficial</title>
 
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cinzel, Playfair Display, Great Vibes & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Bibliotecas para QR Code, Captura em Alta Resolução e Geração de PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --gold-primary: #b88a2e;
+      --gold-dark: #8a6116;
+      --gold-light: #e7c873;
+      --navy-deep: #071936;
+      --navy-mid: #0d2b57;
+      --cream-bg: #fcf9f2;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--cream-bg);
+      color: #1f242d;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .font-cinzel {
+      font-family: 'Cinzel', serif;
+    }
+
+    .font-playfair {
+      font-family: 'Playfair Display', serif;
+    }
+
+    .font-script {
+      font-family: 'Great Vibes', cursive;
+    }
+
+    /* Fundo Celestial Arquitetônico */
+    .celestial-backdrop {
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 250, 235, 0.98) 0%, rgba(250, 243, 227, 0.92) 45%, rgba(242, 231, 206, 0.95) 100%);
+      position: relative;
+    }
+
+    .celestial-backdrop::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(ellipse at 50% 12%, rgba(212, 175, 55, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.95) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(255, 255, 255, 0.95) 0%, transparent 45%);
+      z-index: 0;
+    }
+
+    /* Botão Dourado Metálico 3D */
+    .btn-gold {
+      background: linear-gradient(180deg, #ebd07a 0%, #d4ab46 52%, #b98b27 100%);
+      color: #4b3306;
+      border: 1.5px solid #f5e19c;
+      box-shadow:
+        0 8px 20px -4px rgba(168, 124, 32, 0.42),
+        inset 0 1px 1px rgba(255, 255, 255, 0.75);
+      transition: all 0.2s ease;
+    }
+
+    .btn-gold:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow:
+        0 12px 24px -4px rgba(168, 124, 32, 0.52),
+        inset 0 1px 2px rgba(255, 255, 255, 0.85);
+    }
+
+    .btn-gold:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .btn-gold:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    /* Botão Azul Marinho Premium */
+    .btn-navy {
+      background: linear-gradient(180deg, #103266 0%, #071936 100%);
+      color: #ffffff;
+      border: 1.5px solid #d4af37;
+      box-shadow: 0 10px 24px -6px rgba(7, 25, 54, 0.45);
+      transition: all 0.2s ease;
+    }
+
+    .btn-navy:hover:not(:disabled) {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    /* Cartão Input Elegante */
+    .input-celestial {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1.5px solid #dfd0ae;
+      box-shadow:
+        0 4px 14px rgba(145, 112, 46, 0.08),
+        inset 0 1px 2px rgba(255, 255, 255, 0.9);
+      color: #0b1f3f;
+      transition: all 0.2s ease;
+    }
+
+    .input-celestial:focus {
+      outline: none;
+      border-color: #b88a2e;
+      box-shadow:
+        0 0 0 4px rgba(212, 175, 55, 0.18),
+        0 6px 18px rgba(145, 112, 46, 0.12);
+    }
+
+    /* ============================================================
+       CARTÃO CR80 (PROPORÇÃO REAL 85.6mm x 54mm -> 1.5852 : 1)
+       Design 100% colorido e vetorial para nítida renderização PDF
+       ============================================================ */
+    .id-card-wrapper {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .id-card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 85.6 / 54;
+      border-radius: 14px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #fffdf9 0%, #faf3e3 48%, #f2e4c6 100%);
+      box-shadow:
+        0 18px 38px -10px rgba(34, 26, 12, 0.28),
+        0 0 0 1.5px rgba(184, 138, 46, 0.78);
+      user-select: none;
+    }
+
+    /* Destaque nítido para títulos e letras sobre o fundo celestial */
+    .card-title-contrast {
+      color: #6b4b0c;
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.95),
+        0 0 8px rgba(255, 252, 240, 0.95);
+    }
+
+    .card-label-contrast {
+      color: #6e4f10;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .card-value-contrast {
+      color: #0a1628;
+      font-weight: 800;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+    }
+
+    /* Versão de exportação fixa em alta definição (856px x 540px = 10px/mm) */
+    .id-card-export {
+      width: 856px !important;
+      height: 540px !important;
+      max-width: none !important;
+      aspect-ratio: auto !important;
+      border-radius: 24px !important;
+    }
+
+    /* Destaque do campo ativo durante o preenchimento */
+    .field-highlight {
+      background: rgba(212, 175, 55, 0.16);
+      outline: 1.5px solid rgba(184, 138, 46, 0.65);
+      border-radius: 5px;
+      padding: 1px 5px;
+      margin-left: -5px;
+      transition: all 0.25s ease;
+    }
+
+    /* Animação suave de entrada */
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step-animate {
+      animation: fadeSlideUp 0.28s ease-out forwards;
+    }
+
+    /* Estilos específicos para impressão direta pelo navegador */
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #print-area, #print-area * {
+        visibility: visible;
+      }
+      #print-area {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        gap: 12mm;
+        padding: 10mm;
+        background: #ffffff !important;
+      }
+      .print-card-size {
+        width: 85.6mm !important;
+        height: 54mm !important;
+        box-shadow: none !important;
+        border: 0.3mm solid #999 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body class="celestial-backdrop flex flex-col justify-between">
+
+  <!-- Arco Dourado Decorativo no Topo -->
+  <div class="pointer-events-none fixed inset-x-0 top-0 h-64 overflow-hidden z-0 opacity-65">
+    <svg viewBox="0 0 1200 320" preserveAspectRatio="none" class="w-full h-full">
+      <defs>
+        <radialGradient id="topGlow" cx="50%" cy="0%" r="75%">
+          <stop offset="0%" stop-color="#ffe8a3" stop-opacity="0.7" />
+          <stop offset="65%" stop-color="#f7e7be" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#fcf9f2" stop-opacity="0" />
+        </radialGradient>
+        <linearGradient id="archStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#d4af37" stop-opacity="0.1" />
+          <stop offset="50%" stop-color="#c59736" stop-opacity="0.55" />
+          <stop offset="100%" stop-color="#d4af37" stop-opacity="0.1" />
+        </linearGradient>
+      </defs>
+      <rect width="1200" height="320" fill="url(#topGlow)" />
+      <path d="M 180 320 C 180 60, 1020 60, 1020 320" fill="none" stroke="url(#archStroke)" stroke-width="3" />
+      <path d="M 220 320 C 220 95, 980 95, 980 320" fill="none" stroke="url(#archStroke)" stroke-width="1.5" />
+    </svg>
+  </div>
+
+  <!-- Notificação Flutuante (Toast - substitui alert) -->
+  <div id="toast-box" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden max-w-md w-[92%] px-4 py-3 rounded-2xl shadow-xl border text-sm font-semibold flex items-center gap-3 transition-all">
+    <span id="toast-icon" class="text-lg"></span>
+    <span id="toast-msg" class="flex-1 leading-snug"></span>
+  </div>
+
+  <!-- Cabeçalho Institucional Discreto -->
+  <header class="relative z-10 w-full max-w-3xl mx-auto px-4 pt-4 pb-1 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#e7c873] to-[#9c711d] flex items-center justify-center text-white shadow-sm">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M11 2h2v6h5v2h-5v12h-2V10H6V8h5V2z"/>
+        </svg>
+      </div>
+      <div>
+        <span class="font-cinzel text-xs sm:text-sm font-bold tracking-wider text-[#7c5814] block leading-none">CREDENCIAL MINISTERIAL</span>
+        <span class="text-[11px] text-[#7a6b4d] font-medium">Sistema Oficial de Identificação Eclesiástica</span>
+      </div>
+    </div>
+
+    <div id="header-step-pill" class="hidden px-3.5 py-1 rounded-full bg-white/90 border border-[#dfd0ae] shadow-sm text-[11px] sm:text-xs font-bold tracking-widest text-[#7c5814] uppercase">
+      ETAPA <span id="step-number-label">1</span> DE 9
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="relative z-10 flex-1 w-full max-w-2xl mx-auto px-4 py-4 sm:py-6 flex flex-col justify-center">
+
+    <!-- ============================================================
+         TELA 0: APRESENTAÇÃO ("ANTES DE COMEÇAR — Para quem é?")
+         ============================================================ -->
+    <section id="screen-intro" class="step-animate text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/85 border border-[#e3d4b4] text-[#8a6116] text-xs font-bold tracking-[0.18em] uppercase mb-3 shadow-sm">
+        <span>✦</span> ANTES DE COMEÇAR <span>✦</span>
+      </div>
+
+      <h1 class="font-playfair text-3xl sm:text-5xl font-bold text-[#9e7420] tracking-tight mb-2">
+        Para quem é?
+      </h1>
+      <p class="text-sm sm:text-base text-[#3b3326] max-w-md mx-auto leading-relaxed mb-5 font-medium">
+        Se você exerce um chamado ministerial ou faz parte do corpo de membros e obreiros, esta credencial oficial foi feita para você.
+      </p>
+
+      <!-- Lista de Cargos Elegíveis -->
+      <div class="grid grid-cols-2 gap-2.5 sm:gap-3 max-w-lg mx-auto mb-6 text-left">
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Pastor</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Missionário</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Diácono</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Presbítero</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Apóstolo</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Bispo</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Obreiro</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Evangelista</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Levita</span>
+        </div>
+        <div class="bg-white/90 border border-[#e2d3b5] rounded-2xl px-4 py-3 shadow-sm flex items-center gap-2.5">
+          <span class="text-[#b88a2e] font-bold">✓</span>
+          <span class="font-bold text-[#2b2419] text-sm sm:text-base">Ministro de Louvor</span>
+        </div>
+      </div>
+
+      <!-- Mini Selo de Benefícios -->
+      <div class="bg-white/80 border border-[#e4d5b7] rounded-2xl p-3.5 max-w-lg mx-auto mb-6 text-xs text-[#4f4330] flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 font-semibold">
+        <span>🪪 Frente e Verso Coloridos</span>
+        <span>•</span>
+        <span>📱 QR Code de Autenticidade</span>
+        <span>•</span>
+        <span>🖨️ PDF Pronto p/ Imprimir</span>
+      </div>
+
+      <div class="max-w-md mx-auto">
+        <button type="button" onclick="startWizard()" class="btn-gold w-full py-4 px-8 rounded-full font-extrabold text-base sm:text-lg tracking-wider uppercase shadow-lg">
+          CONTINUAR
+        </button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TELA DO ASSISTENTE EM 9 ETAPAS
+         ============================================================ -->
+    <section id="screen-wizard" class="hidden">
+
+      <!-- Barra de Progresso -->
+      <div class="w-full max-w-lg mx-auto mb-4">
+        <div class="h-2 w-full bg-[#eadfc7] rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-gradient-to-r from-[#d4af37] to-[#9b6e19] transition-all duration-300" style="width: 11.1%"></div>
+        </div>
+      </div>
+
+      <!-- Título e Subtítulo da Etapa Atual -->
+      <div class="text-center mb-4 step-animate" id="step-header-block">
+        <h2 id="step-title" class="font-playfair text-2xl sm:text-4xl font-bold text-[#9c721d] leading-tight mb-1.5">
+          Qual é o seu nome completo?
+        </h2>
+        <p id="step-subtitle" class="text-xs sm:text-sm text-[#3d3528] font-medium max-w-md mx-auto">
+          É o nome que aparece em destaque na frente da carteirinha.
+        </p>
+      </div>
+
+      <!-- Indicador e Alternador Frente / Verso -->
+      <div id="card-preview-section" class="mb-5">
+        <div class="flex items-center justify-center gap-3 mb-2.5">
+          <span class="h-[1px] w-8 bg-[#d6c299]"></span>
+          <span id="card-side-label" class="text-[11px] font-extrabold tracking-[0.18em] text-[#855e16] uppercase">
+            FRENTE DA CARTEIRINHA
+          </span>
+          <span class="h-[1px] w-8 bg-[#d6c299]"></span>
+        </div>
+
+        <!-- Container da Pré-visualização ao Vivo -->
+        <div class="id-card-wrapper">
+          <!-- ==================== FRENTE DO CARTÃO ==================== -->
+          <div id="live-card-front" class="id-card">
+            <!-- Arte Vetorial Celestial Dourada + Onda Azul-Marinho (100% nítida e colorida) -->
+            <svg viewBox="0 0 856 540" preserveAspectRatio="none" class="absolute inset-0 w-full h-full pointer-events-none">
+              <defs>
+                <linearGradient id="bgCreamF" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fffdf8" />
+                  <stop offset="50%" stop-color="#faf2e1" />
+                  <stop offset="100%" stop-color="#eedbb5" />
+                </linearGradient>
+                <radialGradient id="sunBurstF" cx="52%" cy="15%" r="65%">
+                  <stop offset="0%" stop-color="#fff9e6" stop-opacity="1" />
+                  <stop offset="55%" stop-color="#f8e6bd" stop-opacity="0.55" />
+                  <stop offset="100%" stop-color="#ebd19b" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="navyWaveF" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#051329" />
+                  <stop offset="50%" stop-color="#0a244d" />
+                  <stop offset="100%" stop-color="#061733" />
+                </linearGradient>
+                <linearGradient id="goldRibbonF" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#b68627" />
+                  <stop offset="35%" stop-color="#f3d882" />
+                  <stop offset="70%" stop-color="#c69532" />
+                  <stop offset="100%" stop-color="#f7e39c" />
+                </linearGradient>
+                <linearGradient id="pillarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#e5cfa0" stop-opacity="0.45" />
+                  <stop offset="50%" stop-color="#fffaf0" stop-opacity="0.75" />
+                  <stop offset="100%" stop-color="#d4b472" stop-opacity="0.45" />
+                </linearGradient>
+              </defs>
+
+              <!-- Fundo Base -->
+              <rect width="856" height="540" fill="url(#bgCreamF)" />
+              <rect width="856" height="540" fill="url(#sunBurstF)" />
+
+              <!-- Pilares Arquitetônicos Laterais -->
+              <rect x="26" y="0" width="44" height="440" fill="url(#pillarGrad)" />
+              <line x1="38" y1="0" x2="38" y2="440" stroke="#c8a24e" stroke-opacity="0.35" stroke-width="2" />
+              <line x1="56" y1="0" x2="56" y2="440" stroke="#c8a24e" stroke-opacity="0.35" stroke-width="2" />
+
+              <rect x="786" y="0" width="44" height="440" fill="url(#pillarGrad)" />
+              <line x1="800" y1="0" x2="800" y2="440" stroke="#c8a24e" stroke-opacity="0.35" stroke-width="2" />
+              <line x1="818" y1="0" x2="818" y2="440" stroke="#c8a24e" stroke-opacity="0.35" stroke-width="2" />
+
+              <!-- Arco Celestial Central -->
+              <path d="M 85 450 C 85 40, 771 40, 771 450" fill="none" stroke="#d4af37" stroke-opacity="0.45" stroke-width="5" />
+              <path d="M 105 450 C 105 68, 751 68, 751 450" fill="none" stroke="#b88a2e" stroke-opacity="0.3" stroke-width="2" />
+
+              <!-- Nuvens Celestiais Suaves -->
+              <ellipse cx="140" cy="435" rx="220" ry="75" fill="#ffffff" fill-opacity="0.82" />
+              <ellipse cx="420" cy="455" rx="260" ry="70" fill="#ffffff" fill-opacity="0.88" />
+              <ellipse cx="720" cy="425" rx="210" ry="80" fill="#ffffff" fill-opacity="0.82" />
+
+              <!-- Faixa Dourada Luminosa Diagonal à Direita -->
+              <path d="M 540 445 Q 720 375 856 265 L 856 385 Q 710 445 540 475 Z" fill="url(#goldRibbonF)" opacity="0.85" />
+
+              <!-- Onda Azul-Marinho Profundo na Base -->
+              <path d="M 0 435 Q 230 535 455 462 Q 665 392 856 432 L 856 540 L 0 540 Z" fill="url(#navyWaveF)" />
+
+              <!-- Filete Dourado Superior da Onda Azul -->
+              <path d="M 0 435 Q 230 535 455 462 Q 665 392 856 432" fill="none" stroke="url(#goldRibbonF)" stroke-width="5.5" />
+              <path d="M 455 462 Q 665 406 856 444" fill="none" stroke="#f6df92" stroke-opacity="0.65" stroke-width="2" />
+
+              <!-- Brilhos Estelares Discretos -->
+              <circle cx="175" cy="482" r="2.5" fill="#ffe89e" />
+              <circle cx="290" cy="512" r="2" fill="#ffe89e" />
+              <circle cx="780" cy="365" r="3" fill="#ffffff" />
+            </svg>
+
+            <!-- Conteúdo Sobreposto da Frente -->
+            <div class="relative z-10 w-full h-full flex flex-col justify-between p-[3.4%] sm:p-[3.8%]">
+              <!-- Topo: Título Credencial Ministerial -->
+              <div class="text-center pt-[0.2%]">
+                <div class="font-cinzel font-extrabold card-title-contrast tracking-[0.08em] leading-none" style="font-size: clamp(18px, 4.6vw, 27px);">
+                  CREDENCIAL
+                </div>
+                <div class="flex items-center justify-center gap-2 mt-0.5">
+                  <span class="h-[1.5px] w-8 bg-[#7a5812]"></span>
+                  <span class="font-cinzel font-bold card-title-contrast tracking-[0.24em] uppercase" style="font-size: clamp(9px, 2.1vw, 12.5px);">
+                    MINISTERIAL
+                  </span>
+                  <span class="h-[1.5px] w-8 bg-[#7a5812]"></span>
+                </div>
+              </div>
+
+              <!-- Corpo Central: Foto à Esquerda + Dados Bem Grandes no Centro + Cruz à Direita -->
+              <div class="grid grid-cols-12 gap-[2.6%] items-center my-auto px-[1%]">
+                <!-- Moldura da Foto (4 colunas) -->
+                <div class="col-span-4 flex flex-col items-center">
+                  <div class="w-full aspect-[3/3.65] rounded-[11px] p-[2.5px] bg-gradient-to-b from-[#e4c26b] via-[#b88a2e] to-[#7a5812] shadow-md">
+                    <div class="w-full h-full rounded-[9px] overflow-hidden bg-[#efe6d2] relative flex items-center justify-center">
+                      <img id="preview-photo-img" src="" alt="Foto do Membro" class="hidden w-full h-full object-cover transition-transform duration-100" />
+                      <!-- Placeholder elegante caso ainda não tenha foto -->
+                      <div id="preview-photo-placeholder" class="flex flex-col items-center justify-center text-center p-2 text-[#6e4f10]">
+                        <svg class="w-8 h-8 sm:w-10 sm:h-10 mb-1" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                        </svg>
+                        <span class="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider leading-tight">Sua Foto 3x4</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dados Principais (6 colunas) -->
+                <div class="col-span-6 flex flex-col justify-center space-y-[3.2%] text-left pl-[1%]">
+                  <!-- Nome Completo -->
+                  <div id="box-front-name" class="border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.7vw, 9.5px);">
+                      NOME COMPLETO
+                    </div>
+                    <div id="card-val-name" class="card-value-contrast leading-tight break-words" style="font-size: clamp(13px, 3.2vw, 18px);">
+                      Seu Nome Completo
+                    </div>
+                  </div>
+
+                  <!-- Cargo / Função -->
+                  <div id="box-front-role" class="border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.7vw, 9.5px);">
+                      CARGO / FUNÇÃO
+                    </div>
+                    <div id="card-val-role" class="card-value-contrast leading-tight break-words" style="font-size: clamp(12px, 2.8vw, 15.5px);">
+                      Cargo Ministerial
+                    </div>
+                  </div>
+
+                  <!-- Ministério -->
+                  <div id="box-front-ministry" class="border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.7vw, 9.5px);">
+                      MINISTÉRIO
+                    </div>
+                    <div id="card-val-ministry" class="card-value-contrast leading-snug break-words" style="font-size: clamp(11px, 2.5vw, 14px);">
+                      Nome da Igreja ou Ministério
+                    </div>
+                  </div>
+
+                  <!-- Emissão -->
+                  <div>
+                    <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.7vw, 9.5px);">
+                      EMISSÃO
+                    </div>
+                    <div id="card-val-date" class="card-value-contrast leading-tight" style="font-size: clamp(11.5px, 2.6vw, 14.5px);">
+                      24/11/2026
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Coluna Direita: Cruz Dourada + Servindo ao Reino (2 colunas) -->
+                <div class="col-span-2 flex flex-col items-center justify-center text-center">
+                  <div class="w-[1.5px] h-3 sm:h-4 bg-[#7a5812] mb-1"></div>
+                  <svg class="w-5 h-7 sm:w-6 sm:h-8 text-[#7a5812]" viewBox="0 0 24 32" fill="currentColor">
+                    <path d="M10.5 0h3v9h7.5v3h-7.5v20h-3V12H3V9h7.5V0z"/>
+                  </svg>
+                  <div class="w-[1.5px] h-2 sm:h-3 bg-[#7a5812] my-1"></div>
+                  <div class="font-cinzel font-extrabold card-title-contrast uppercase leading-tight tracking-wider" style="font-size: clamp(6.5px, 1.5vw, 8.5px);">
+                    SERVINDO<br/>AO REINO<br/>DE DEUS
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rodapé da Frente: Chamados + Até os Confins da Terra -->
+              <div class="flex items-end justify-between px-[1.5%] pb-[0.3%]">
+                <div class="flex items-center gap-1.5 leading-none bg-white/75 px-2 py-0.5 rounded-full">
+                  <span class="font-script font-bold text-[#6b4b0c]" style="font-size: clamp(17px, 4.2vw, 25px);">Chamados</span>
+                  <span class="font-extrabold uppercase tracking-wider text-[#4a3206] leading-tight" style="font-size: clamp(6.5px, 1.5vw, 8.5px);">
+                    PARA FAZER<br/>A DIFERENÇA
+                  </span>
+                </div>
+
+                <div class="text-right pr-[1%]">
+                  <div class="font-cinzel font-extrabold text-white tracking-[0.14em] uppercase leading-tight drop-shadow" style="font-size: clamp(8.5px, 2.1vw, 12px);">
+                    ATÉ OS CONFINS
+                  </div>
+                  <div class="w-full h-[1.5px] bg-[#f5dc8c] my-[1px]"></div>
+                  <div class="font-cinzel font-bold text-[#ffeba8] tracking-[0.22em] uppercase leading-tight" style="font-size: clamp(7.5px, 1.8vw, 10.5px);">
+                    DA TERRA
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ==================== VERSO DO CARTÃO ==================== -->
+          <div id="live-card-back" class="id-card hidden">
+            <!-- Arte Vetorial Celestial do Verso -->
+            <svg viewBox="0 0 856 540" preserveAspectRatio="none" class="absolute inset-0 w-full h-full pointer-events-none">
+              <defs>
+                <linearGradient id="bgCreamB" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#fffdf8" />
+                  <stop offset="50%" stop-color="#faf2e1" />
+                  <stop offset="100%" stop-color="#eedbb5" />
+                </linearGradient>
+                <radialGradient id="sunBurstB" cx="50%" cy="12%" r="65%">
+                  <stop offset="0%" stop-color="#fff9e6" stop-opacity="1" />
+                  <stop offset="55%" stop-color="#f8e6bd" stop-opacity="0.5" />
+                  <stop offset="100%" stop-color="#ebd19b" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="navyWaveB" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#051329" />
+                  <stop offset="50%" stop-color="#0a244d" />
+                  <stop offset="100%" stop-color="#061733" />
+                </linearGradient>
+                <linearGradient id="goldRibbonB" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#b68627" />
+                  <stop offset="50%" stop-color="#f3d882" />
+                  <stop offset="100%" stop-color="#c69532" />
+                </linearGradient>
+              </defs>
+
+              <rect width="856" height="540" fill="url(#bgCreamB)" />
+              <rect width="856" height="540" fill="url(#sunBurstB)" />
+
+              <!-- Pilares Laterais -->
+              <rect x="26" y="0" width="44" height="440" fill="url(#pillarGrad)" />
+              <rect x="786" y="0" width="44" height="440" fill="url(#pillarGrad)" />
+              <path d="M 85 450 C 85 40, 771 40, 771 450" fill="none" stroke="#d4af37" stroke-opacity="0.45" stroke-width="5" />
+
+              <!-- Nuvens -->
+              <ellipse cx="160" cy="435" rx="230" ry="75" fill="#ffffff" fill-opacity="0.84" />
+              <ellipse cx="440" cy="455" rx="260" ry="70" fill="#ffffff" fill-opacity="0.88" />
+              <ellipse cx="710" cy="425" rx="220" ry="80" fill="#ffffff" fill-opacity="0.84" />
+
+              <!-- Faixa Dourada + Onda Azul-Marinho -->
+              <path d="M 520 450 Q 700 385 856 290 L 856 405 Q 700 455 520 480 Z" fill="url(#goldRibbonB)" opacity="0.82" />
+              <path d="M 0 438 Q 250 538 480 460 Q 675 395 856 422 L 856 540 L 0 540 Z" fill="url(#navyWaveB)" />
+              <path d="M 0 438 Q 250 538 480 460 Q 675 395 856 422" fill="none" stroke="url(#goldRibbonB)" stroke-width="5.5" />
+            </svg>
+
+            <!-- Conteúdo Sobreposto do Verso -->
+            <div class="relative z-10 w-full h-full flex flex-col justify-between p-[3.4%] sm:p-[3.8%]">
+              <!-- Cabeçalho -->
+              <div class="text-center pt-[0.2%]">
+                <div class="font-cinzel font-extrabold card-title-contrast tracking-[0.08em] leading-none" style="font-size: clamp(18px, 4.6vw, 27px);">
+                  CREDENCIAL
+                </div>
+                <div class="flex items-center justify-center gap-2 mt-0.5">
+                  <span class="h-[1.5px] w-8 bg-[#7a5812]"></span>
+                  <span class="font-cinzel font-bold card-title-contrast tracking-[0.24em] uppercase" style="font-size: clamp(9px, 2.1vw, 12.5px);">
+                    MINISTERIAL
+                  </span>
+                  <span class="h-[1.5px] w-8 bg-[#7a5812]"></span>
+                </div>
+              </div>
+
+              <!-- Corpo do Verso: Dados à Esquerda + QR Code de Autenticidade à Direita -->
+              <div class="grid grid-cols-12 gap-[2.8%] items-center my-auto px-[1.5%]">
+                <!-- Coluna de Informações (8 colunas) -->
+                <div class="col-span-8 space-y-[2.6%] text-left">
+                  <!-- CPF -->
+                  <div id="box-back-cpf" class="flex items-start gap-2 border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-[#7a5812] bg-white flex items-center justify-center text-[#7a5812] shrink-0 mt-0.5">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.65vw, 9px);">CPF</div>
+                      <div id="card-val-cpf" class="card-value-contrast leading-tight tracking-wide" style="font-size: clamp(12px, 2.8vw, 15.5px);">
+                        000.000.000-00
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Filiação -->
+                  <div id="box-back-filiacao" class="flex items-start gap-2 border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-[#7a5812] bg-white flex items-center justify-center text-[#7a5812] shrink-0 mt-0.5">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.65vw, 9px);">FILIAÇÃO</div>
+                      <div id="card-val-father" class="card-value-contrast leading-snug break-words" style="font-size: clamp(10.5px, 2.45vw, 13.5px);">
+                        Nome Completo do Pai
+                      </div>
+                      <div id="card-val-mother" class="card-value-contrast leading-snug break-words" style="font-size: clamp(10.5px, 2.45vw, 13.5px);">
+                        Nome Completo da Mãe
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Matrícula (100% nítida, sem borrão) -->
+                  <div class="flex items-start gap-2 border-b border-[#b88a2e]/65 pb-[1.5%]">
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-[#7a5812] bg-white flex items-center justify-center text-[#7a5812] shrink-0 mt-0.5">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.65vw, 9px);">MATRÍCULA</div>
+                      <div id="card-val-matricula" class="font-extrabold tracking-wider text-[#0B192C] leading-tight" style="font-size: clamp(11px, 2.55vw, 14px);">
+                        ACM-2026-K7QF-M2XA
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Endereço do Ministério -->
+                  <div id="box-back-address" class="flex items-start gap-2">
+                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-[#7a5812] bg-white flex items-center justify-center text-[#7a5812] shrink-0 mt-0.5">
+                      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                      <div class="uppercase card-label-contrast" style="font-size: clamp(7.5px, 1.65vw, 9px);">ENDEREÇO DO MINISTÉRIO</div>
+                      <div id="card-val-address" class="card-value-contrast leading-snug break-words" style="font-size: clamp(10px, 2.35vw, 13px);">
+                        Rua, número, bairro, cidade e estado
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Coluna QR Code de Autenticidade (4 colunas) -->
+                <div class="col-span-4 flex flex-col items-center justify-center text-center">
+                  <div class="p-1.5 sm:p-2 bg-white rounded-xl border-2 border-[#7a5812] shadow-md">
+                    <div id="card-qr-container" class="w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center"></div>
+                  </div>
+                  <p class="mt-1.5 font-extrabold text-[#3d2904] bg-white/80 px-1.5 py-0.5 rounded-md leading-tight" style="font-size: clamp(7.5px, 1.65vw, 9.5px);">
+                    Aponte a câmera do<br/>celular para o QR CODE
+                  </p>
+                </div>
+              </div>
+
+              <!-- Espaço inferior para onda azul -->
+              <div class="h-[6%]"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botão Rápido para Virar Carteirinha a Qualquer Momento -->
+        <div class="flex justify-center mt-2.5">
+          <button type="button" onclick="toggleCardSide()" class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/90 hover:bg-white border border-[#dfd0ae] text-xs font-bold text-[#7c5814] shadow-sm transition">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span id="toggle-side-btn-text">Ver Verso da Carteirinha</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           ÁREA DOS INPUTS DE CADA ETAPA (1 A 9)
+           ============================================================ -->
+      <div class="w-full max-w-lg mx-auto">
+
+        <!-- ETAPA 1: NOME COMPLETO -->
+        <div id="step-1" class="step-panel step-animate">
+          <label for="input-name" class="block text-xs font-bold uppercase tracking-wider text-[#7c5814] mb-1.5 ml-1">
+            Nome Completo do Membro / Ministro
+          </label>
+          <input id="input-name" type="text" autocomplete="name" placeholder="Ex: João Pedro da Silva"
+            class="input-celestial w-full px-5 py-4 rounded-2xl text-lg sm:text-xl font-bold" />
+        </div>
+
+        <!-- ETAPA 2: CARGO MINISTERIAL -->
+        <div id="step-2" class="step-panel hidden step-animate">
+          <label for="input-role" class="block text-xs font-bold uppercase tracking-wider text-[#7c5814] mb-1.5 ml-1">
+            Cargo ou Função Ministerial
+          </label>
+          <input id="input-role" type="text" placeholder="Ex: Ministro de Louvor, Diácono, Pastor..."
+            class="input-celestial w-full px-5 py-4 rounded-2xl text-lg sm:text-xl font-bold mb-3" />
+
+          <!-- Sugestões Rápidas -->
+          <div class="text-[11px] font-bold uppercase tracking-wider text-[#7a6845] mb-1.5 ml-1">
+            Toque para preencher rápido:
+          </div>
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" onclick="selectRoleChip('Pastor')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Pastor</button>
+            <button type="button" onclick="selectRoleChip('Missionário')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Missionário</button>
+            <button type="button" onclick="selectRoleChip('Diácono')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Diácono</button>
+            <button type="button" onclick="selectRoleChip('Presbítero')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Presbítero</button>
+            <button type="button" onclick="selectRoleChip('Evangelista')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Evangelista</button>
+            <button type="button" onclick="selectRoleChip('Obreiro')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Obreiro</button>
+            <button type="button" onclick="selectRoleChip('Ministro de Louvor')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Ministro de Louvor</button>
+            <button type="button" onclick="selectRoleChip('Levita')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Levita</button>
+            <button type="button" onclick="selectRoleChip('Membro')" class="px-3 py-1.5 rounded-full bg-white/90 hover:bg-[#f6e8c3] border border-[#decba3] text-xs font-bold text-[#4a3712] transition">Membro</button>
+          </div>
+        </div>
+
+        <!-- ETAPA 3: NOME DO MINISTÉRIO / IGREJA -->
+        <div id="step-3" class="step-panel hidden step-animate">
+          <label for="input-ministry" class="block text-xs font-bold uppercase tracking-wider text-[#7c5814] mb-1.5 ml-1">
+            Nome da Igreja, Missão ou Ministério
+          </label>
+          <textarea id="input-ministry" rows="2" placeholder="Ex: Igreja Batista Getsêmani Do Morro De Santana"
+            class="input-celestial w-full px-5 py-3.5 rounded-2xl text-base sm:text-lg font-bold resize-none"></textarea>
+        </div>
+
+        <!-- ETAPA 4: FOTO DA GALERIA / CÂMERA + AJUSTE DE ZOOM E POSIÇÃO -->
+        <div id="step-4" class="step-panel hidden step-animate">
+          <label for="input-photo" class="cursor-pointer block bg-white/95 hover:bg-white border-2 border-dashed border-[#c9a24b] rounded-2xl p-4 shadow-sm transition">
+            <div class="flex items-center gap-4">
+              <div id="upload-thumb-box" class="w-14 h-16 rounded-xl bg-[#f5ebd4] border border-[#d6be8a] flex items-center justify-center overflow-hidden shrink-0 text-[#9c721f]">
+                <svg id="upload-thumb-icon" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <img id="upload-thumb-img" src="" alt="Miniatura" class="hidden w-full h-full object-cover" />
+              </div>
+              <div class="text-left">
+                <div class="text-xs font-bold text-[#8a6116] uppercase tracking-wider">Acesso à Galeria / Câmera</div>
+                <div class="text-base sm:text-lg font-extrabold text-[#2b2213]">Clique aqui para escolher ou ajustar foto</div>
+                <div class="text-xs text-[#695b41]">Formatos JPG, PNG ou HEIC — Ajustado automaticamente</div>
+              </div>
+            </div>
+            <input id="input-photo" type="file" accept="image/*" class="hidden" />
+          </label>
+
+          <!-- Controles Finos de Enquadramento (Aparecem após carregar foto) -->
+          <div id="photo-adjust-controls" class="hidden mt-3 bg-white/90 border border-[#e3d3b2] rounded-2xl p-3.5 space-y-2.5">
+            <div class="flex items-center justify-between text-xs font-bold text-[#6e5019]">
+              <span>🔍 Zoom da Foto</span>
+              <span id="zoom-val-label">100%</span>
+            </div>
+            <input id="photo-zoom" type="range" min="100" max="220" value="100" class="w-full accent-[#b88a2e] cursor-pointer" />
+
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <div>
+                <div class="text-[11px] font-bold text-[#6e5019] mb-1">↔ Posição Horizontal</div>
+                <input id="photo-pan-x" type="range" min="-40" max="40" value="0" class="w-full accent-[#b88a2e] cursor-pointer" />
+              </div>
+              <div>
+                <div class="text-[11px] font-bold text-[#6e5019] mb-1">↕ Posição Vertical</div>
+                <input id="photo-pan-y" type="range" min="-40" max="40" value="0" class="w-full accent-[#b88a2e] cursor-pointer" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ETAPA 5: CPF -->
+        <div id="step-5" class="step-panel hidden step-animate">
+          <label for="input-cpf" class="block text-xs font-bold uppercase tracking-wider text-[#7c5814] mb-1.5 ml-1">
+            Número do CPF (11 dígitos)
+          </label>
+          <input id="input-cpf" type="tel" inputmode="numeric" maxlength="14" placeholder="000.000.000-00"
+            class="input-celestial w-full px-5 py-4 rounded-2xl text-xl sm:text-2xl font-extrabold tracking-wider text-center" />
+        </div>
+
+        <!-- ETAPA 6: FILIAÇÃO (PAI E MÃE) -->
+        <div id="step-6" class="step-panel hidden step-animate space-y-3">
+          <div>
+            <label for="input-father" class="block text-xs font-extrabold uppercase tracking-wider text-[#8a6116] mb-1 ml-1">
+              NOME COMPLETO DO PAI
+            </label>
+            <input id="input-father" type="text" placeholder="Ex: Adenilson da Silva Canuto"
+              class="input-celestial w-full px-5 py-3.5 rounded-2xl text-base sm:text-lg font-bold" />
+          </div>
+          <div>
+            <label for="input-mother" class="block text-xs font-extrabold uppercase tracking-wider text-[#8a6116] mb-1 ml-1">
+              NOME COMPLETO DA MÃE
+            </label>
+            <input id="input-mother" type="text" placeholder="Ex: Jocilene da Silva do Nascimento"
+              class="input-celestial w-full px-5 py-3.5 rounded-2xl text-base sm:text-lg font-bold" />
+          </div>
+        </div>
+
+        <!-- ETAPA 7: ENDEREÇO DO MINISTÉRIO -->
+        <div id="step-7" class="step-panel hidden step-animate">
+          <label for="input-address" class="block text-xs font-bold uppercase tracking-wider text-[#7c5814] mb-1.5 ml-1">
+            Endereço Completo do Ministério / Igreja
+          </label>
+          <textarea id="input-address" rows="2" placeholder="Ex: Rua Leopoldina Neves Pinheiro, 120 - Centro, Macaé - RJ"
+            class="input-celestial w-full px-5 py-3.5 rounded-2xl text-base sm:text-lg font-bold resize-none"></textarea>
+        </div>
+
+        <!-- ETAPA 8: WHATSAPP E E-MAIL PARA ENVIO -->
+        <div id="step-8" class="step-panel hidden step-animate space-y-3">
+          <div>
+            <label for="input-whatsapp" class="block text-xs font-extrabold uppercase tracking-wider text-[#8a6116] mb-1 ml-1">
+              WHATSAPP COM DDD (Obrigatório)
+            </label>
+            <input id="input-whatsapp" type="tel" inputmode="numeric" maxlength="15" placeholder="(22) 99999-9999"
+              class="input-celestial w-full px-5 py-3.5 rounded-2xl text-lg sm:text-xl font-extrabold tracking-wide" />
+          </div>
+          <div>
+            <label for="input-email" class="block text-xs font-extrabold uppercase tracking-wider text-[#8a6116] mb-1 ml-1">
+              E-MAIL PARA CÓPIA E COMPROVANTE (Opcional)
+            </label>
+            <input id="input-email" type="email" autocomplete="email" placeholder="seuemail@exemplo.com"
+              class="input-celestial w-full px-5 py-3.5 rounded-2xl text-base sm:text-lg font-bold" />
+          </div>
+        </div>
+
+        <!-- ETAPA 9: REVISÃO FINAL + PAGAMENTO PIX + DOWNLOAD PDF -->
+        <div id="step-9" class="step-panel hidden step-animate space-y-4">
+
+          <!-- Bloco de Pagamento PIX Oficial (Bloqueado até confirmação) -->
+          <div id="pix-payment-card" class="bg-white/95 border-2 border-[#d4af37] rounded-3xl p-4 sm:p-5 shadow-lg">
+            <div class="flex items-center justify-between border-b border-[#efe2c6] pb-3 mb-3">
+              <div>
+                <span class="inline-block px-2.5 py-0.5 rounded-full bg-[#fdf3d7] text-[#8a6116] text-[11px] font-extrabold uppercase tracking-wider">
+                  Taxa de Emissão Oficial
+                </span>
+                <h3 class="font-playfair text-xl sm:text-2xl font-bold text-[#071936] mt-0.5">
+                  Pagamento via Pix
+                </h3>
+              </div>
+              <div class="text-right">
+                <span class="text-[11px] font-bold text-[#6e5c3b] uppercase block">Valor Único</span>
+                <span class="text-2xl sm:text-3xl font-extrabold text-[#0b6b3a]">R$ 10,00</span>
+              </div>
+            </div>
+
+            <!-- QR Code Pix + Dados da Chave -->
+            <div class="flex flex-col sm:flex-row items-center gap-4 bg-[#fcf8ef] border border-[#e7d7b6] rounded-2xl p-3.5 mb-3.5">
+              <div class="bg-white p-2.5 rounded-2xl border-2 border-[#c89d3c] shadow-sm shrink-0">
+                <div id="pix-qrcode-box" class="w-36 h-36 flex items-center justify-center"></div>
+              </div>
+
+              <div class="flex-1 text-center sm:text-left space-y-2 w-full">
+                <p class="text-xs text-[#4b3e26] font-medium leading-relaxed">
+                  Abra o aplicativo do seu banco, escolha <strong>Pix → Ler QR Code</strong> ou copie a chave telefone abaixo:
+                </p>
+
+                <div class="bg-white border border-[#dfd0ae] rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+                  <div class="text-left min-w-0">
+                    <span class="text-[10px] font-bold uppercase text-[#8a6116] block">Chave Pix (Celular)</span>
+                    <span class="font-extrabold text-sm sm:text-base text-[#071936] tracking-wide">22998578815</span>
+                  </div>
+                  <button type="button" onclick="copyPixKey()" class="px-3 py-1.5 rounded-lg bg-[#071936] hover:bg-[#113163] text-white text-xs font-bold shrink-0 transition">
+                    Copiar Chave
+                  </button>
+                </div>
+
+                <button type="button" onclick="copyPixPayload()" class="w-full py-2.5 px-3 rounded-xl bg-[#f3e3ba] hover:bg-[#ebd498] border border-[#cfa749] text-[#4b3306] text-xs font-extrabold uppercase tracking-wider transition flex items-center justify-center gap-1.5">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                  </svg>
+                  Copiar Código Pix (Copia e Cola)
+                </button>
+              </div>
+            </div>
+
+            <!-- Validação do Comprovante para Liberação -->
+            <div class="space-y-3 bg-[#f7f9fc] border border-[#d6e0ee] rounded-2xl p-3.5">
+              <div class="text-xs font-extrabold text-[#071936] uppercase tracking-wider flex items-center gap-1.5">
+                <span>🔒</span> Liberação Imediata do PDF
+              </div>
+
+              <label for="input-receipt" class="cursor-pointer flex items-center gap-3 bg-white hover:bg-[#fefcf7] border border-dashed border-[#9bb0cc] rounded-xl p-3 transition">
+                <div class="w-9 h-9 rounded-lg bg-[#e8eff9] text-[#0b2b59] flex items-center justify-center shrink-0 font-bold">
+                  📎
+                </div>
+                <div class="flex-1 min-w-0 text-left">
+                  <div id="receipt-file-label" class="text-xs sm:text-sm font-bold text-[#071936] truncate">
+                    Anexar comprovante do Pix (Foto ou PDF)
+                  </div>
+                  <div class="text-[11px] text-[#5c6c84]">Toque para selecionar o comprovante na galeria/arquivos</div>
+                </div>
+                <input id="input-receipt" type="file" accept="image/*,.pdf" class="hidden" />
+              </label>
+
+              <label class="flex items-start gap-2.5 cursor-pointer text-left">
+                <input id="check-pix-confirmed" type="checkbox" class="mt-0.5 w-4 h-4 accent-[#0b6b3a] rounded cursor-pointer" />
+                <span class="text-xs text-[#263449] font-semibold leading-snug">
+                  Confirmo que realizei o pagamento de <strong>R$ 10,00</strong> para a chave Pix <strong>22998578815</strong> e estou ciente da conferência pela secretaria.
+                </span>
+              </label>
+
+              <button type="button" onclick="confirmPaymentAndUnlock()" class="btn-navy w-full py-3.5 px-5 rounded-2xl font-extrabold text-sm sm:text-base tracking-wide uppercase flex items-center justify-center gap-2">
+                <span>CONFIRMAR PAGAMENTO E LIBERAR PDF</span>
+              </button>
+
+              <!-- Botão Discreto da Secretaria -->
+              <div class="text-center pt-1">
+                <button type="button" onclick="toggleAdminModal(true)" class="text-[11px] text-[#6d7b91] hover:text-[#071936] underline font-medium">
+                  Acesso rápido da Secretaria / Tesouraria
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Painel Liberado Após Pagamento (Download em PDF + Impressão + Envio) -->
+          <div id="unlocked-download-card" class="hidden bg-gradient-to-b from-[#ffffff] to-[#f4fbf7] border-2 border-[#16874b] rounded-3xl p-5 shadow-xl text-center space-y-4 step-animate">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#dcfce7] text-[#116337] text-xs font-extrabold uppercase tracking-wider">
+              <span>✓</span> Pagamento Confirmado • Documento Liberado
+            </div>
+
+            <div>
+              <h3 class="font-playfair text-2xl font-bold text-[#071936]">
+                Sua Credencial Está Pronta!
+              </h3>
+              <p class="text-xs sm:text-sm text-[#394b41] mt-1">
+                Baixe o arquivo PDF colorido em alta definição (Frente e Verso no formato oficial de carteirinha CR80 pronto para imprimir e plastificar).
+              </p>
+            </div>
+
+            <button type="button" id="btn-download-pdf" onclick="generateOfficialPDF()" class="btn-gold w-full py-4 px-6 rounded-2xl font-extrabold text-base sm:text-lg tracking-wider uppercase flex items-center justify-center gap-2.5 shadow-lg">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>BAIXAR CARTEIRINHA EM PDF</span>
+            </button>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              <button type="button" onclick="printDirect()" class="py-3 px-4 rounded-xl bg-[#071936] hover:bg-[#103063] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition">
+                <span>🖨️</span> Imprimir Direto
+              </button>
+              <button type="button" onclick="sendSummaryWhatsApp()" class="py-3 px-4 rounded-xl bg-[#16874b] hover:bg-[#12703e] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition">
+                <span>📲</span> Enviar Resumo WhatsApp
+              </button>
+            </div>
+
+            <button type="button" onclick="sendSummaryEmail()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-[#f5f7fa] border border-[#cbd5e1] text-[#1e293b] text-xs font-bold flex items-center justify-center gap-2 transition">
+              <span>✉️</span> Enviar Registro por E-mail
+            </button>
+          </div>
+        </div>
+
+        <!-- Botões de Navegação Inferior (CONTINUAR e VOLTAR) -->
+        <div class="mt-5 space-y-2.5">
+          <button type="button" id="btn-next-step" onclick="nextStep()" class="btn-gold w-full py-4 px-8 rounded-full font-extrabold text-base sm:text-lg tracking-wider uppercase">
+            CONTINUAR
+          </button>
+
+          <div class="text-center">
+            <button type="button" onclick="prevStep()" class="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-white/80 hover:bg-white text-[#7c5814] font-bold text-xs sm:text-sm tracking-wider uppercase transition">
+              <span>‹</span> VOLTAR
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Rodapé Discreto com Assinatura Solicitada -->
+  <footer class="relative z-10 w-full py-3 px-4 text-center">
+    <p class="text-[11px] text-[#8a7a5c]/80 font-medium tracking-wide">
+      Emissão Digital Segura • Desenvolvido por <span class="font-bold text-[#7c5814]">brayan.sistemy</span>
+    </p>
+  </footer>
+
+  <!-- ============================================================
+       MODAL DE LIBERAÇÃO RÁPIDA DA SECRETARIA
+       ============================================================ -->
+  <div id="admin-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-[#e2d2b0] space-y-4">
+      <div class="flex items-center justify-between">
+        <h4 class="font-playfair text-xl font-bold text-[#071936]">Liberação Secretaria</h4>
+        <button type="button" onclick="toggleAdminModal(false)" class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 font-bold">✕</button>
+      </div>
+      <p class="text-xs text-gray-600 leading-relaxed">
+        Caso o membro tenha realizado o Pix diretamente no balcão ou sem anexo no celular, digite o PIN de autorização da secretaria <strong></strong>).
+      </p>
+      <input id="admin-pin-input" type="password" inputmode="numeric" maxlength="6" placeholder="Digite o PIN"
+        class="input-celestial w-full px-4 py-3 rounded-xl text-center text-lg font-extrabold tracking-widest" />
+      <button type="button" onclick="validateAdminPin()" class="btn-navy w-full py-3 rounded-xl font-bold text-sm uppercase">
+        Liberar Download Agora
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ÁREA OCULTA DE ALTA RESOLUÇÃO PARA RENDERIZAÇÃO DO PDF E IMPRESSÃO
+       ============================================================ -->
+  <div id="pdf-render-stage" style="position: fixed; left: -9999px; top: 0; pointer-events: none; z-index: -1;"></div>
+  <div id="print-area" class="hidden"></div>
+
+  <script>
+    // =========================================================================
+    // ESTADO GLOBAL DA APLICAÇÃO
+    // =========================================================================
+    const state = {
+      currentStep: 0, // 0 = Tela Inicial, 1..9 = Etapas
+      cardSide: 'front', // 'front' | 'back'
+      name: '',
+      role: '',
+      ministry: '',
+      photoDataUrl: '',
+      photoZoom: 100,
+      photoPanX: 0,
+      photoPanY: 0,
+      cpf: '',
+      father: '',
+      mother: '',
+      address: '',
+      whatsapp: '',
+      email: '',
+      issueDate: '',
+      matricula: '',
+      receiptAttached: false,
+      receiptName: '',
+      isPaid: false
+    };
+
+    const PIX_KEY = '22998578815';
+    const PIX_AMOUNT = '10.00';
+
+    const STEP_META = {
+      1: {
+        title: 'Qual é o seu nome completo?',
+        subtitle: 'É o nome que aparece em destaque na frente da carteirinha.',
+        side: 'front',
+        highlight: 'box-front-name'
+      },
+      2: {
+        title: 'Qual é o seu cargo ministerial?',
+        subtitle: 'Escreva como deve aparecer na frente da carteirinha.',
+        side: 'front',
+        highlight: 'box-front-role'
+      },
+      3: {
+        title: 'Qual é o nome do ministério?',
+        subtitle: 'Igreja, missão ou ministério que você representa.',
+        side: 'front',
+        highlight: 'box-front-ministry'
+      },
+      4: {
+        title: 'Envie a sua foto',
+        subtitle: 'Foto de rosto, de frente e com boa luz. Depois ajuste o zoom e a posição.',
+        side: 'front',
+        highlight: ''
+      },
+      5: {
+        title: 'Qual é o seu CPF?',
+        subtitle: 'Somente números: a pontuação entra sozinha.',
+        side: 'back',
+        highlight: 'box-back-cpf'
+      },
+      6: {
+        title: 'Qual é a sua filiação?',
+        subtitle: 'Nome completo do pai e da mãe, como consta no documento.',
+        side: 'back',
+        highlight: 'box-back-filiacao'
+      },
+      7: {
+        title: 'Qual é o endereço do ministério?',
+        subtitle: 'Rua, número, bairro, cidade e estado.',
+        side: 'back',
+        highlight: 'box-back-address'
+      },
+      8: {
+        title: 'Qual é o seu WhatsApp?',
+        subtitle: 'É por lá e pelo e-mail que registramos o envio da sua carteirinha ministerial.',
+        side: 'front',
+        highlight: ''
+      },
+      9: {
+        title: 'Conferência e Pagamento',
+        subtitle: 'Confira frente e verso da sua credencial e finalize via Pix para liberar o PDF.',
+        side: 'front',
+        highlight: ''
+      }
+    };
+
+    // =========================================================================
+    // INICIALIZAÇÃO
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Define data de emissão atual (DD/MM/AAAA)
+      const now = new Date();
+      const dd = String(now.getDate()).padStart(2, '0');
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const yyyy = now.getFullYear();
+      state.issueDate = `${dd}/${mm}/${yyyy}`;
+      document.getElementById('card-val-date').textContent = state.issueDate;
+
+      // Gera código único de matrícula ministerial
+      const randPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const randNum = Math.floor(1000 + Math.random() * 9000);
+      state.matricula = `ACM-${yyyy}-${randPart}-${randNum}`;
+      document.getElementById('card-val-matricula').textContent = state.matricula;
+
+      // Gera QR Code de autenticidade no verso da carteirinha
+      updateAuthQRCode();
+
+      // Gera QR Code Pix oficial EMV para a chave 22998578815 no valor de R$ 10,00
+      renderPixQRCode();
+
+      // Vincula eventos de digitação e máscaras em tempo real
+      bindFormEvents();
+    });
+
+    // =========================================================================
+    // NOTIFICAÇÕES VISUAIS (SUBSTITUI ALERT)
+    // =========================================================================
+    let toastTimer = null;
+    function showToast(message, type = 'info') {
+      const box = document.getElementById('toast-box');
+      const icon = document.getElementById('toast-icon');
+      const msg = document.getElementById('toast-msg');
+
+      box.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[92%] px-4 py-3 rounded-2xl shadow-xl border text-sm font-semibold flex items-center gap-3 transition-all';
+
+      if (type === 'error') {
+        box.classList.add('bg-red-50', 'border-red-300', 'text-red-900');
+        icon.textContent = '⚠️';
+      } else if (type === 'success') {
+        box.classList.add('bg-emerald-50', 'border-emerald-300', 'text-emerald-900');
+        icon.textContent = '✅';
+      } else {
+        box.classList.add('bg-amber-50', 'border-amber-300', 'text-amber-950');
+        icon.textContent = '✨';
+      }
+
+      msg.textContent = message;
+      box.classList.remove('hidden');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        box.classList.add('hidden');
+      }, 3800);
+    }
+
+    // =========================================================================
+    // VINCULAÇÃO DE EVENTOS E MÁSCARAS
+    // =========================================================================
+    function bindFormEvents() {
+      // Etapa 1: Nome
+      document.getElementById('input-name').addEventListener('input', (e) => {
+        state.name = e.target.value;
+        document.getElementById('card-val-name').textContent = state.name.trim() || 'Seu Nome Completo';
+        updateCardVerificationQR();
+      });
+
+      // Etapa 2: Cargo
+      document.getElementById('input-role').addEventListener('input', (e) => {
+        state.role = e.target.value;
+        document.getElementById('card-val-role').textContent = state.role.trim() || 'Cargo Ministerial';
+        updateCardVerificationQR();
+      });
+
+      // Etapa 3: Ministério
+      document.getElementById('input-ministry').addEventListener('input', (e) => {
+        state.ministry = e.target.value;
+        document.getElementById('card-val-ministry').textContent = state.ministry.trim() || 'Nome da Igreja ou Ministério';
+        updateCardVerificationQR();
+      });
+
+      // Etapa 4: Upload de Foto
+      document.getElementById('input-photo').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+          showToast('Por favor, selecione um arquivo de imagem válido (JPG ou PNG).', 'error');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          state.photoDataUrl = ev.target.result;
+          state.photoZoom = 100;
+          state.photoPanX = 0;
+          state.photoPanY = 0;
+
+          document.getElementById('photo-zoom').value = 100;
+          document.getElementById('photo-pan-x').value = 0;
+          document.getElementById('photo-pan-y').value = 0;
+          document.getElementById('zoom-val-label').textContent = '100%';
+
+          const previewImg = document.getElementById('preview-photo-img');
+          const placeholder = document.getElementById('preview-photo-placeholder');
+          previewImg.src = state.photoDataUrl;
+          previewImg.classList.remove('hidden');
+          placeholder.classList.add('hidden');
+
+          const thumbImg = document.getElementById('upload-thumb-img');
+          const thumbIcon = document.getElementById('upload-thumb-icon');
+          thumbImg.src = state.photoDataUrl;
+          thumbImg.classList.remove('hidden');
+          thumbIcon.classList.add('hidden');
+
+          document.getElementById('photo-adjust-controls').classList.remove('hidden');
+          applyPhotoTransform();
+          showToast('Foto carregada! Ajuste o zoom e a posição se desejar.', 'success');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      // Controles de Zoom e Posição da Foto
+      document.getElementById('photo-zoom').addEventListener('input', (e) => {
+        state.photoZoom = Number(e.target.value);
+        document.getElementById('zoom-val-label').textContent = `${state.photoZoom}%`;
+        applyPhotoTransform();
+      });
+
+      document.getElementById('photo-pan-x').addEventListener('input', (e) => {
+        state.photoPanX = Number(e.target.value);
+        applyPhotoTransform();
+      });
+
+      document.getElementById('photo-pan-y').addEventListener('input', (e) => {
+        state.photoPanY = Number(e.target.value);
+        applyPhotoTransform();
+      });
+
+      // Etapa 5: Máscara de CPF (000.000.000-00)
+      document.getElementById('input-cpf').addEventListener('input', (e) => {
+        let digits = e.target.value.replace(/\D/g, '').slice(0, 11);
+        let formatted = digits;
+        if (digits.length > 9) {
+          formatted = `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`;
+        } else if (digits.length > 6) {
+          formatted = `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`;
+        } else if (digits.length > 3) {
+          formatted = `${digits.slice(0, 3)}.${digits.slice(3)}`;
+        }
+        e.target.value = formatted;
+        state.cpf = formatted;
+        document.getElementById('card-val-cpf').textContent = formatted || '000.000.000-00';
+        updateCardVerificationQR();
+      });
+
+      // Etapa 6: Filiação
+      document.getElementById('input-father').addEventListener('input', (e) => {
+        state.father = e.target.value;
+        document.getElementById('card-val-father').textContent = state.father.trim() || 'Nome Completo do Pai';
+      });
+
+      document.getElementById('input-mother').addEventListener('input', (e) => {
+        state.mother = e.target.value;
+        document.getElementById('card-val-mother').textContent = state.mother.trim() || 'Nome Completo da Mãe';
+      });
+
+      // Etapa 7: Endereço do Ministério
+      document.getElementById('input-address').addEventListener('input', (e) => {
+        state.address = e.target.value;
+        document.getElementById('card-val-address').textContent = state.address.trim() || 'Rua, número, bairro, cidade e estado';
+      });
+
+      // Etapa 8: Máscara WhatsApp + E-mail
+      document.getElementById('input-whatsapp').addEventListener('input', (e) => {
+        let d = e.target.value.replace(/\D/g, '').slice(0, 11);
+        let f = d;
+        if (d.length > 6) {
+          f = `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+        } else if (d.length > 2) {
+          f = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+        } else if (d.length > 0) {
+          f = `(${d}`;
+        }
+        e.target.value = f;
+        state.whatsapp = f;
+      });
+
+      document.getElementById('input-email').addEventListener('input', (e) => {
+        state.email = e.target.value.trim();
+      });
+
+      // Etapa 9: Anexo de Comprovante Pix
+      document.getElementById('input-receipt').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (file) {
+          state.receiptAttached = true;
+          state.receiptName = file.name;
+          document.getElementById('receipt-file-label').textContent = `✓ Anexado: ${file.name}`;
+          document.getElementById('receipt-file-label').classList.add('text-emerald-700');
+          showToast('Comprovante anexado com sucesso!', 'success');
+        }
+      });
+    }
+
+    function applyPhotoTransform() {
+      const img = document.getElementById('preview-photo-img');
+      const scale = state.photoZoom / 100;
+      img.style.transform = `scale(${scale}) translate(${state.photoPanX}%, ${state.photoPanY}%)`;
+    }
+
+    function selectRoleChip(roleText) {
+      const input = document.getElementById('input-role');
+      input.value = roleText;
+      state.role = roleText;
+      document.getElementById('card-val-role').textContent = roleText;
+      updateCardVerificationQR();
+    }
+
+    // =========================================================================
+    // NAVEGAÇÃO ENTRE ETAPAS (0 A 9)
+    // =========================================================================
+    function startWizard() {
+      document.getElementById('screen-intro').classList.add('hidden');
+      document.getElementById('screen-wizard').classList.remove('hidden');
+      document.getElementById('header-step-pill').classList.remove('hidden');
+      goToStep(1);
+    }
+
+    function goToStep(stepNumber) {
+      state.currentStep = stepNumber;
+
+      // Atualiza indicador no topo e barra de progresso
+      document.getElementById('step-number-label').textContent = stepNumber;
+      const percent = (stepNumber / 9) * 100;
+      document.getElementById('progress-bar').style.width = `${percent}%`;
+
+      // Atualiza textos de título e subtítulo
+      const meta = STEP_META[stepNumber];
+      document.getElementById('step-title').textContent = meta.title;
+      document.getElementById('step-subtitle').textContent = meta.subtitle;
+
+      // Alterna painéis de entrada
+      document.querySelectorAll('.step-panel').forEach((el) => el.classList.add('hidden'));
+      document.getElementById(`step-${stepNumber}`).classList.remove('hidden');
+
+      // Alterna automaticamente entre Frente e Verso da carteirinha
+      setCardSide(meta.side);
+
+      // Remove destaques anteriores e aplica destaque no campo correspondente
+      document.querySelectorAll('.field-highlight').forEach((el) => el.classList.remove('field-highlight'));
+      if (meta.highlight) {
+        const targetBox = document.getElementById(meta.highlight);
+        if (targetBox) targetBox.classList.add('field-highlight');
+      }
+
+      // Na Etapa 9 oculta o botão "CONTINUAR" padrão pois há o fluxo de Pix / PDF
+      const nextBtn = document.getElementById('btn-next-step');
+      if (stepNumber === 9) {
+        nextBtn.classList.add('hidden');
+      } else {
+        nextBtn.classList.remove('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function nextStep() {
+      const step = state.currentStep;
+
+      // Validações obrigatórias antes de avançar
+      if (step === 1 && state.name.trim().length < 3) {
+        showToast('Por favor, digite o seu nome completo para continuar.', 'error');
+        document.getElementById('input-name').focus();
+        return;
+      }
+      if (step === 2 && state.role.trim().length < 2) {
+        showToast('Por favor, informe o seu cargo ou função ministerial.', 'error');
+        document.getElementById('input-role').focus();
+        return;
+      }
+      if (step === 3 && state.ministry.trim().length < 3) {
+        showToast('Por favor, informe o nome da igreja ou ministério.', 'error');
+        document.getElementById('input-ministry').focus();
+        return;
+      }
+      if (step === 4 && !state.photoDataUrl) {
+        showToast('Por favor, envie uma foto para a sua carteirinha.', 'error');
+        return;
+      }
+      if (step === 5) {
+        const cleanCpf = state.cpf.replace(/\D/g, '');
+        if (cleanCpf.length !== 11 || !isValidCPF(cleanCpf)) {
+          showToast('Por favor, informe um CPF válido com 11 números.', 'error');
+          document.getElementById('input-cpf').focus();
+          return;
+        }
+      }
+      if (step === 6 && (state.father.trim().length < 3 || state.mother.trim().length < 3)) {
+        showToast('Por favor, preencha o nome completo do pai e da mãe.', 'error');
+        return;
+      }
+      if (step === 7 && state.address.trim().length < 5) {
+        showToast('Por favor, informe o endereço completo do ministério.', 'error');
+        document.getElementById('input-address').focus();
+        return;
+      }
+      if (step === 8) {
+        const cleanPhone = state.whatsapp.replace(/\D/g, '');
+        if (cleanPhone.length < 10) {
+          showToast('Por favor, informe um número de WhatsApp válido com DDD.', 'error');
+          document.getElementById('input-whatsapp').focus();
+          return;
+        }
+        if (state.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(state.email)) {
+          showToast('Por favor, verifique o formato do e-mail informado.', 'error');
+          document.getElementById('input-email').focus();
+          return;
+        }
+      }
+
+      if (step < 9) {
+        goToStep(step + 1);
+      }
+    }
+
+    function prevStep() {
+      if (state.currentStep <= 1) {
+        document.getElementById('screen-wizard').classList.add('hidden');
+        document.getElementById('header-step-pill').classList.add('hidden');
+        document.getElementById('screen-intro').classList.remove('hidden');
+      } else {
+        goToStep(state.currentStep - 1);
+      }
+    }
+
+    function setCardSide(side) {
+      state.cardSide = side;
+      const front = document.getElementById('live-card-front');
+      const back = document.getElementById('live-card-back');
+      const label = document.getElementById('card-side-label');
+      const btnText = document.getElementById('toggle-side-btn-text');
+
+      if (side === 'front') {
+        front.classList.remove('hidden');
+        back.classList.add('hidden');
+        label.textContent = 'FRENTE DA CARTEIRINHA';
+        btnText.textContent = 'Ver Verso da Carteirinha';
+      } else {
+        front.classList.add('hidden');
+        back.classList.remove('hidden');
+        label.textContent = 'VERSO DA CARTEIRINHA';
+        btnText.textContent = 'Ver Frente da Carteirinha';
+      }
+    }
+
+    function toggleCardSide() {
+      setCardSide(state.cardSide === 'front' ? 'back' : 'front');
+    }
+
+    // Validação Matemática Real de CPF
+    function isValidCPF(cpf) {
+      if (/^(\d)\1{10}$/.test(cpf)) return false;
+      let sum = 0;
+      for (let i = 0; i < 9; i++) sum += parseInt(cpf.charAt(i), 10) * (10 - i);
+      let rev = 11 - (sum % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      if (rev !== parseInt(cpf.charAt(9), 10)) return false;
+
+      sum = 0;
+      for (let i = 0; i < 10; i++) sum += parseInt(cpf.charAt(i), 10) * (11 - i);
+      rev = 11 - (sum % 11);
+      if (rev === 10 || rev === 11) rev = 0;
+      return rev === parseInt(cpf.charAt(10), 10);
+    }
+
+    // =========================================================================
+    // QR CODE DE AUTENTICIDADE DO VERSO DA CARTEIRINHA
+    // =========================================================================
+    function updateCardVerificationQR() {
+      const container = document.getElementById('card-qr-container');
+      if (!container || typeof QRCode === 'undefined') return;
+
+      container.innerHTML = '';
+      const payload = [
+        'CREDENCIAL MINISTERIAL',
+        `MATRICULA: ${state.matricula}`,
+        `NOME: ${state.name || 'MEMBRO'}`,
+        `CARGO: ${state.role || 'MINISTERIAL'}`,
+        `CPF: ${state.cpf || '000.000.000-00'}`,
+        `EMISSAO: ${state.issueDate}`
+      ].join(' | ');
+
+      new QRCode(container, {
+        text: payload,
+        width: 96,
+        height: 96,
+        colorDark: '#071936',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    // =========================================================================
+    // GERADOR DE PIX EMV BR CODE VÁLIDO (CHAVE 22998578815 — R$ 10,00)
+    // =========================================================================
+    function crc16CCITT(str) {
+      let crc = 0xFFFF;
+      for (let i = 0; i < str.length; i++) {
+        crc ^= str.charCodeAt(i) << 8;
+        for (let j = 0; j < 8; j++) {
+          if ((crc & 0x8000) !== 0) {
+            crc = ((crc << 1) ^ 0x1021) & 0xFFFF;
+          } else {
+            crc = (crc << 1) & 0xFFFF;
+          }
+        }
+      }
+      return crc.toString(16).toUpperCase().padStart(4, '0');
+    }
+
+    function emvField(id, value) {
+      const len = String(value.length).padStart(2, '0');
+      return `${id}${len}${value}`;
+    }
+
+    function buildPixPayload() {
+      // Chave telefone no padrão internacional exigido pelo Banco Central (+5522998578815)
+      const pixPhoneKey = `+55${PIX_KEY}`;
+      const gui = emvField('00', 'br.gov.bcb.pix');
+      const key = emvField('01', pixPhoneKey);
+      const desc = emvField('02', 'Credencial Ministerial');
+      const merchantAccount = emvField('26', gui + key + desc);
+
+      const txid = emvField('05', 'CREDENCIAL2026');
+      const additionalData = emvField('62', txid);
+
+      const rawPayload =
+        emvField('00', '01') +
+        merchantAccount +
+        emvField('52', '0000') +
+        emvField('53', '986') +
+        emvField('54', PIX_AMOUNT) +
+        emvField('58', 'BR') +
+        emvField('59', 'SECRETARIA MINISTERIAL') +
+        emvField('60', 'MACAE') +
+        additionalData +
+        '6304';
+
+      const crc = crc16CCITT(rawPayload);
+      return rawPayload + crc;
+    }
+
+    function renderPixQRCode() {
+      const box = document.getElementById('pix-qrcode-box');
+      if (!box || typeof QRCode === 'undefined') return;
+      box.innerHTML = '';
+      const payload = buildPixPayload();
+
+      new QRCode(box, {
+        text: payload,
+        width: 140,
+        height: 140,
+        colorDark: '#071936',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    function fallbackCopyText(text, successMsg) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.focus();
+      temp.select();
+      try {
+        document.execCommand('copy');
+        showToast(successMsg, 'success');
+      } catch (err) {
+        showToast('Não foi possível copiar automaticamente. Selecione o texto manualmente.', 'error');
+      }
+      document.body.removeChild(temp);
+    }
+
+    function copyPixKey() {
+      fallbackCopyText(PIX_KEY, 'Chave Pix 22998578815 copiada!');
+    }
+
+    function copyPixPayload() {
+      const payload = buildPixPayload();
+      fallbackCopyText(payload, 'Código Pix Copia e Cola (R$ 10,00) copiado!');
+    }
+
+    // =========================================================================
+    // LIBERAÇÃO APÓS CONFIRMAÇÃO DE PAGAMENTO PIX
+    // =========================================================================
+    function confirmPaymentAndUnlock() {
+      const checked = document.getElementById('check-pix-confirmed').checked;
+      if (!state.receiptAttached) {
+        showToast('Por favor, anexe o comprovante do pagamento Pix (foto ou PDF) antes de liberar.', 'error');
+        return;
+      }
+      if (!checked) {
+        showToast('Marque a caixa confirmando que realizou a transferência de R$ 10,00.', 'error');
+        return;
+      }
+
+      unlockDocumentState();
+      showToast('Pagamento confirmado! Sua carteirinha em PDF foi liberada.', 'success');
+    }
+
+    function toggleAdminModal(show) {
+      const modal = document.getElementById('admin-modal');
+      if (show) {
+        modal.classList.remove('hidden');
+        document.getElementById('admin-pin-input').value = '';
+        document.getElementById('admin-pin-input').focus();
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    function validateAdminPin() {
+      const pin = document.getElementById('admin-pin-input').value.trim();
+      if (pin === '2026' || pin === '8815') {
+        toggleAdminModal(false);
+        unlockDocumentState();
+        showToast('Liberação autorizada pela Secretaria!', 'success');
+      } else {
+        showToast('PIN incorreto. Verifique com a secretaria.', 'error');
+      }
+    }
+
+    function unlockDocumentState() {
+      state.isPaid = true;
+      document.getElementById('pix-payment-card').classList.add('hidden');
+      document.getElementById('unlocked-download-card').classList.remove('hidden');
+    }
+
+    // =========================================================================
+    // GERAÇÃO REAL DE PDF EM ALTA DEFINIÇÃO (COLORIDO — FRENTE E VERSO CR80)
+    // =========================================================================
+    async function captureHighResCards() {
+      const stage = document.getElementById('pdf-render-stage');
+      stage.innerHTML = '';
+
+      // Clona Frente e Verso em tamanho fixo HD (856px x 540px) sem destaques amarelos de edição
+      const frontClone = document.getElementById('live-card-front').cloneNode(true);
+      const backClone = document.getElementById('live-card-back').cloneNode(true);
+
+      frontClone.classList.remove('hidden');
+      backClone.classList.remove('hidden');
+      frontClone.classList.add('id-card-export');
+      backClone.classList.add('id-card-export');
+
+      frontClone.querySelectorAll('.field-highlight').forEach((el) => el.classList.remove('field-highlight'));
+      backClone.querySelectorAll('.field-highlight').forEach((el) => el.classList.remove('field-highlight'));
+
+      // Ajusta tipografia proporcional ao cartão 856x540px para ficar perfeitamente legível no PDF
+      adjustExportTypography(frontClone, backClone);
+
+      // Re-renderiza o QR code dentro do clone do verso em alta nitidez
+      const qrBox = backClone.querySelector('#card-qr-container');
+      if (qrBox && typeof QRCode !== 'undefined') {
+        qrBox.innerHTML = '';
+        qrBox.style.width = '148px';
+        qrBox.style.height = '148px';
+        new QRCode(qrBox, {
+          text: `CREDENCIAL MINISTERIAL | MAT: ${state.matricula} | NOME: ${state.name} | CPF: ${state.cpf} | EMISSAO: ${state.issueDate}`,
+          width: 148,
+          height: 148,
+          colorDark: '#071936',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+
+      stage.appendChild(frontClone);
+      stage.appendChild(backClone);
+
+      // Aguarda renderização das fontes e QR Code
+      await new Promise((r) => setTimeout(r, 180));
+
+      const frontCanvas = await html2canvas(frontClone, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      });
+
+      const backCanvas = await html2canvas(backClone, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+        logging: false
+      });
+
+      stage.innerHTML = '';
+      return {
+        frontImg: frontCanvas.toDataURL('image/png', 1.0),
+        backImg: backCanvas.toDataURL('image/png', 1.0)
+      };
+    }
+
+    function adjustExportTypography(frontClone, backClone) {
+      // Garante tamanhos grandes, nítidos e sem cortes na escala 856x540px
+      const setFont = (root, selector, sizePx) => {
+        const el = root.querySelector(selector);
+        if (el) el.style.fontSize = sizePx;
+      };
+
+      // Rótulos pequenos em tamanho bem legível no PDF
+      frontClone.querySelectorAll('.card-label-contrast').forEach((el) => {
+        el.style.fontSize = '13px';
+      });
+      backClone.querySelectorAll('.card-label-contrast').forEach((el) => {
+        el.style.fontSize = '13px';
+      });
+
+      // Frente
+      frontClone.querySelectorAll('.font-cinzel.font-extrabold').forEach((el, idx) => {
+        if (idx === 0) el.style.fontSize = '40px';
+      });
+      setFont(frontClone, '#card-val-name', '28px');
+      setFont(frontClone, '#card-val-role', '24px');
+      setFont(frontClone, '#card-val-ministry', '22px');
+      setFont(frontClone, '#card-val-date', '22px');
+
+      // Verso
+      backClone.querySelectorAll('.font-cinzel.font-extrabold').forEach((el, idx) => {
+        if (idx === 0) el.style.fontSize = '40px';
+      });
+      setFont(backClone, '#card-val-cpf', '24px');
+      setFont(backClone, '#card-val-father', '21px');
+      setFont(backClone, '#card-val-mother', '21px');
+      setFont(backClone, '#card-val-matricula', '23px');
+      setFont(backClone, '#card-val-address', '20px');
+    }
+
+    async function generateOfficialPDF() {
+      if (!state.isPaid) {
+        showToast('Confirme o pagamento Pix antes de baixar o PDF.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-download-pdf');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ GERANDO PDF COLORIDO EM ALTA DEFINIÇÃO...</span>';
+
+      try {
+        const { frontImg, backImg } = await captureHighResCards();
+        const { jsPDF } = window.jspdf;
+
+        // Cria folha A4 (210mm x 297mm) em alta qualidade prontinha para imprimir e recortar
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+
+        // Cabeçalho informativo no topo da folha A4
+        doc.setFillColor(7, 25, 54);
+        doc.rect(0, 0, 210, 24, 'F');
+        doc.setTextColor(243, 216, 130);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(14);
+        doc.text('CREDENCIAL MINISTERIAL — FOLHA OFICIAL DE IMPRESSAO', 105, 11, { align: 'center' });
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.text(`Titular: ${state.name}  |  Matricula: ${state.matricula}  |  Emissao: ${state.issueDate}`, 105, 18, { align: 'center' });
+
+        // Tamanho padrão oficial de carteirinha CR80: 85.6mm x 54mm
+        const cardW = 85.6;
+        const cardH = 54.0;
+
+        // Seção 1: Frente e Verso lado a lado prontos para dobra e plastificação (Polaseal 86x54mm)
+        doc.setTextColor(70, 55, 25);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text('TAMANHO OFICIAL DE CARTEIRINHA (85,6mm x 54mm — PADRAO CR80)', 105, 35, { align: 'center' });
+
+        const leftX = 16;
+        const rightX = 108.4;
+        const topY = 42;
+
+        doc.setFontSize(8.5);
+        doc.setTextColor(120, 90, 30);
+        doc.text('FRENTE', leftX + cardW / 2, topY - 2, { align: 'center' });
+        doc.text('VERSO', rightX + cardW / 2, topY - 2, { align: 'center' });
+
+        doc.addImage(frontImg, 'PNG', leftX, topY, cardW, cardH);
+        doc.addImage(backImg, 'PNG', rightX, topY, cardW, cardH);
+
+        // Guias finas de recorte
+        doc.setDrawColor(160, 140, 100);
+        doc.setLineWidth(0.25);
+        doc.rect(leftX, topY, cardW, cardH);
+        doc.rect(rightX, topY, cardW, cardH);
+
+        // Seção 2: Cópia Ampliada de Conferência (120mm x 75.7mm) para visualização detalhada
+        const bigW = 120;
+        const bigH = 75.7;
+        const centerX = (210 - bigW) / 2;
+
+        doc.setTextColor(70, 55, 25);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9.5);
+        doc.text('COPIA AMPLIADA PARA CONFERENCIA E ARQUIVO DA SECRETARIA', 105, 112, { align: 'center' });
+
+        doc.addImage(frontImg, 'PNG', centerX, 117, bigW, bigH);
+        doc.addImage(backImg, 'PNG', centerX, 198, bigW, bigH);
+
+        // Instruções de impressão no rodapé da folha A4
+        doc.setFillColor(250, 244, 230);
+        doc.rect(16, 279, 178, 12, 'F');
+        doc.setTextColor(80, 60, 20);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text('Instrucoes: Imprimir em escala 100% (Tamanho Real) em papel fotografico ou couche 230g/250g e plastificar com polaseal.', 105, 286, { align: 'center' });
+
+        const safeFileName = (state.name || 'Membro')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/[^a-zA-Z0-9\s]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+
+        doc.save(`Credencial-Ministerial-${safeFileName}.pdf`);
+        showToast('PDF da carteirinha baixado com sucesso!', 'success');
+      } catch (err) {
+        console.error(err);
+        showToast('Ocorreu um erro ao gerar o PDF. Tente novamente ou use Imprimir Direto.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    async function printDirect() {
+      try {
+        const { frontImg, backImg } = await captureHighResCards();
+        const printArea = document.getElementById('print-area');
+        printArea.innerHTML = `
+          <div style="text-align:center; font-family:sans-serif; margin-bottom:6mm;">
+            <strong>CREDENCIAL MINISTERIAL — ${state.name}</strong><br/>
+            <small>Matrícula: ${state.matricula} | Emissão: ${state.issueDate}</small>
+          </div>
+          <img src="${frontImg}" class="print-card-size" />
+          <img src="${backImg}" class="print-card-size" />
+        `;
+        window.print();
+      } catch (e) {
+        window.print();
+      }
+    }
+
+    // =========================================================================
+    // ENVIO DE RESUMO PARA WHATSAPP E E-MAIL
+    // =========================================================================
+    function buildSummaryMessage() {
+      return [
+        `*CREDENCIAL MINISTERIAL — REGISTRO OFICIAL*`,
+        `• *Nome:* ${state.name}`,
+        `• *Cargo:* ${state.role}`,
+        `• *Ministério:* ${state.ministry}`,
+        `• *CPF:* ${state.cpf}`,
+        `• *Matrícula:* ${state.matricula}`,
+        `• *Emissão:* ${state.issueDate}`,
+        `• *Endereço:* ${state.address}`,
+        `• *WhatsApp:* ${state.whatsapp}`,
+        state.email ? `• *E-mail:* ${state.email}` : ''
+      ].filter(Boolean).join('\n');
+    }
+
+    function sendSummaryWhatsApp() {
+      const phone = state.whatsapp.replace(/\D/g, '');
+      const targetPhone = phone.startsWith('55') ? phone : `55${phone}`;
+      const text = encodeURIComponent(buildSummaryMessage());
+      window.open(`https://wa.me/${targetPhone}?text=${text}`, '_blank');
+    }
+
+    function sendSummaryEmail() {
+      const subject = encodeURIComponent(`Credencial Ministerial - ${state.name} (${state.matricula})`);
+      const body = encodeURIComponent(buildSummaryMessage().replace(/\*/g, ''));
+      const to = state.email || '';
+      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    }
+  </script>
+</body>
+</html>
