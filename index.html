@@ -1527,28 +1527,30 @@
     // QR CODE DE AUTENTICIDADE DO VERSO DA CARTEIRINHA
     // =========================================================================
     function updateCardVerificationQR() {
-      const container = document.getElementById('card-qr-container');
-      if (!container || typeof QRCode === 'undefined') return;
+      const CHURCH_INSTAGRAM_URL = 'https://www.instagram.com/getmorrodesantana?lqvp=MWF3aDFoOGFkMDBuNw==';
 
-      container.innerHTML = '';
-      const payload = [
-        'CREDENCIAL MINISTERIAL',
-        `MATRICULA: ${state.matricula}`,
-        `NOME: ${state.name || 'MEMBRO'}`,
-        `CARGO: ${state.role || 'MINISTERIAL'}`,
-        `CPF: ${state.cpf || '000.000.000-00'}`,
-        `EMISSAO: ${state.issueDate}`
-      ].join(' | ');
+function updateAuthQRCode() {
+  const container = document.getElementById('card-qr-container');
+  if (!container) return;
 
-      new QRCode(container, {
-        text: payload,
-        width: 96,
-        height: 96,
-        colorDark: '#071936',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
-    }
+  container.innerHTML = '';
+
+  if (typeof QRCode === 'undefined') return;
+
+  new QRCode(container, {
+    text: CHURCH_INSTAGRAM_URL,
+    width: 84,
+    height: 84,
+    colorDark: '#0A1628',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  setTimeout(() => {
+    container.removeAttribute('title');
+    container.querySelectorAll('img, canvas').forEach((el) => el.removeAttribute('title'));
+  }, 50);
+}
 
     // =========================================================================
     // GERADOR DE PIX EMV BR CODE VÁLIDO (CHAVE 22998578815 — R$ 10,00)
