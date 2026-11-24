@@ -1,0 +1,1975 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credencial Ministerial Oficial | Emissão Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cinzel, Playfair Display, Great Vibes & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Great+Vibes&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- QRCode.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        script: ['Great Vibes', 'cursive'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        gold: {
+                            100: '#FBF8F1',
+                            200: '#F3EAD6',
+                            300: '#E2BE6F',
+                            400: '#C99A3B',
+                            500: '#B08226',
+                            600: '#966B1D',
+                            700: '#6E4C10',
+                            800: '#3D2804',
+                        },
+                        navy: {
+                            800: '#0D213F',
+                            900: '#091B3A',
+                            950: '#040C18',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FBF8F1;
+            background-image:
+                radial-gradient(circle at 50% 0%, rgba(255, 253, 248, 1) 0%, rgba(246, 238, 220, 0.9) 55%, rgba(243, 234, 214, 0.95) 100%);
+            min-height: 100vh;
+            color: #3D2804;
+            overflow-x: hidden;
+        }
+
+        .celestial-arch-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .btn-gold-metallic {
+            background: linear-gradient(180deg, #E7C673 0%, #C99A3B 52%, #B28225 100%);
+            box-shadow:
+                0 10px 24px -6px rgba(150, 107, 29, 0.45),
+                inset 0 2px 2px rgba(255, 255, 255, 0.65),
+                inset 0 -2px 4px rgba(102, 70, 12, 0.35);
+            border: 1px solid #F3DC96;
+            color: #3D2804;
+            transition: all 0.2s ease;
+        }
+
+        .btn-gold-metallic:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.04);
+        }
+
+        .btn-gold-metallic:disabled {
+            opacity: 0.52;
+            cursor: not-allowed;
+            filter: grayscale(0.35);
+        }
+
+        .celestial-pill {
+            background: rgba(255, 255, 255, 0.94);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(201, 154, 59, 0.45);
+            box-shadow: 0 6px 20px rgba(138, 108, 42, 0.06);
+            transition: all 0.2s ease;
+        }
+
+        .celestial-pill:hover, .celestial-pill:focus-within {
+            border-color: #C99A3B;
+            background: #FFFFFF;
+            box-shadow: 0 8px 25px rgba(184, 142, 40, 0.14);
+        }
+
+        .canvas-preview-frame {
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 1100 / 696;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow:
+                0 20px 44px -10px rgba(9, 27, 58, 0.32),
+                0 0 0 1.5px rgba(201, 154, 59, 0.7);
+            background: #FDFBF5;
+        }
+
+        .canvas-preview-frame canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-step {
+            animation: fadeSlideUp 0.28s ease-out forwards;
+        }
+
+        #pix-qr-container img, #pix-qr-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative selection:bg-gold-300 selection:text-gold-800">
+
+    <!-- Fundo Arquitetônico Celestial -->
+    <div class="celestial-arch-bg">
+        <svg class="w-full h-full opacity-55" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMin slice" fill="none">
+            <defs>
+                <radialGradient id="sunGlow" cx="50%" cy="15%" r="60%">
+                    <stop offset="0%" stop-color="#FFFDF8" stop-opacity="1"/>
+                    <stop offset="45%" stop-color="#F3EAD6" stop-opacity="0.65"/>
+                    <stop offset="100%" stop-color="#FBF8F1" stop-opacity="0"/>
+                </radialGradient>
+                <linearGradient id="archGold" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#E2BE6F" stop-opacity="0.52"/>
+                    <stop offset="50%" stop-color="#C99A3B" stop-opacity="0.28"/>
+                    <stop offset="100%" stop-color="#E2BE6F" stop-opacity="0.45"/>
+                </linearGradient>
+            </defs>
+            <rect width="1440" height="900" fill="url(#sunGlow)"/>
+            <path d="M260 900 V380 C260 140 500 20 720 20 C940 20 1180 140 1180 380 V900" stroke="url(#archGold)" stroke-width="3"/>
+            <path d="M300 900 V390 C300 175 520 65 720 65 C920 65 1140 175 1140 390 V900" stroke="url(#archGold)" stroke-width="1.5"/>
+            <ellipse cx="180" cy="840" rx="340" ry="130" fill="#FFFFFF" fill-opacity="0.75"/>
+            <ellipse cx="1260" cy="840" rx="360" ry="140" fill="#FFFFFF" fill-opacity="0.75"/>
+            <ellipse cx="720" cy="890" rx="680" ry="110" fill="#FFFFFF" fill-opacity="0.85"/>
+        </svg>
+    </div>
+
+    <!-- Gerador offscreen do QR Code do Verso -->
+    <div id="hidden-card-qr-generator" style="position:fixed; left:-9999px; top:0; width:260px; height:260px;"></div>
+
+    <!-- Toast Flutuante -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"></div>
+
+    <!-- Cabeçalho -->
+    <header class="relative z-10 max-w-4xl mx-auto px-4 pt-4 pb-2 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-gold-300 to-gold-600 flex items-center justify-center shadow-md border border-gold-200 shrink-0">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 2h2v7h7v2h-7v11h-2V11H4V9h7V2z"/>
+                </svg>
+            </div>
+            <div class="min-w-0">
+                <span class="font-cinzel font-bold text-sm sm:text-base tracking-wider text-gold-800 block leading-tight">CREDENCIAL MINISTERIAL</span>
+                <span class="text-[11px] text-gold-700/85 font-medium block">Emissão Digital Oficial • Frente e Verso</span>
+            </div>
+        </div>
+
+        <button onclick="openSettingsModal()" title="Configurações da Secretaria" class="p-2.5 rounded-full celestial-pill text-gold-700 hover:text-gold-800 flex items-center gap-1.5 text-xs font-semibold shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            <span>Secretaria</span>
+        </button>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="relative z-10 max-w-2xl mx-auto px-4 pb-16 pt-2">
+
+        <!-- ========================================================= -->
+        <!-- TELA INICIAL: ANTES DE COMEÇAR - PARA QUEM É?             -->
+        <!-- ========================================================= -->
+        <section id="step-0" class="animate-step text-center">
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <span class="h-[1px] w-10 bg-gold-400/60"></span>
+                <span class="text-xs font-bold tracking-[0.2em] text-gold-700 uppercase">Antes de Começar</span>
+                <span class="h-[1px] w-10 bg-gold-400/60"></span>
+            </div>
+
+            <h1 class="font-playfair font-bold text-3xl sm:text-5xl text-gold-600 mb-3 drop-shadow-sm">
+                Para quem é?
+            </h1>
+            <p class="text-sm sm:text-base text-gold-800/90 max-w-md mx-auto mb-5 leading-relaxed font-medium">
+                Se você exerce um chamado ministerial, esta credencial também pode ser para você.
+            </p>
+
+            <!-- Grade com os 16 Cargos Ministeriais -->
+            <div id="roles-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-lg mx-auto mb-4"></div>
+
+            <!-- Campo para digitar cargo personalizado -->
+            <div class="max-w-lg mx-auto mb-6">
+                <div class="celestial-pill rounded-2xl px-4 py-3 flex items-center gap-2">
+                    <input type="text" id="custom-role-start" placeholder="Ou digite outro cargo / função..." class="w-full bg-transparent text-sm font-semibold text-navy-900 placeholder-navy-900/40 focus:outline-none">
+                    <button type="button" onclick="selectCustomStartRole()" class="px-3.5 py-1.5 rounded-xl bg-gold-500 text-white text-xs font-bold hover:bg-gold-600 shrink-0">
+                        Usar
+                    </button>
+                </div>
+            </div>
+
+            <div class="max-w-md mx-auto">
+                <button onclick="goToStep(1)" class="w-full py-4 px-8 rounded-full btn-gold-metallic font-bold tracking-[0.16em] text-base sm:text-lg uppercase">
+                    Continuar
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- WIZARD ETAPAS 1 A 9                                       -->
+        <!-- ========================================================= -->
+        <section id="wizard-container" class="hidden">
+
+            <!-- Barra de Progresso e Título da Etapa -->
+            <div class="text-center mb-3">
+                <div class="inline-block px-5 py-1.5 rounded-full celestial-pill text-xs font-bold tracking-[0.16em] text-gold-700 uppercase mb-2">
+                    Etapa <span id="step-number">1</span> de 9
+                </div>
+
+                <div class="w-48 mx-auto h-1.5 bg-gold-200 rounded-full overflow-hidden mb-3">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-gold-400 to-gold-600 transition-all duration-300" style="width: 11%"></div>
+                </div>
+
+                <h2 id="step-title" class="font-playfair font-bold text-2xl sm:text-4xl text-gold-600 leading-tight mb-1.5 px-2">
+                    Qual é o seu nome completo?
+                </h2>
+                <p id="step-subtitle" class="text-xs sm:text-sm text-gold-800/85 max-w-md mx-auto px-2 leading-relaxed">
+                    É o nome que aparece em destaque na frente da carteirinha.
+                </p>
+            </div>
+
+            <!-- PRÉ-VISUALIZAÇÃO INTERATIVA EM TEMPO REAL (ETAPAS 1 A 8) -->
+            <div id="single-preview-wrapper" class="my-4">
+                <div class="flex items-center justify-center gap-2 mb-2.5">
+                    <button type="button" id="tab-front-btn" onclick="setCardSide('front')" class="px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-navy-900 text-gold-200 shadow-sm">
+                        Frente da Carteirinha
+                    </button>
+                    <button type="button" id="tab-back-btn" onclick="setCardSide('back')" class="px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-white/90 text-gold-800 border border-gold-300">
+                        Verso da Carteirinha
+                    </button>
+                </div>
+
+                <div class="canvas-preview-frame">
+                    <canvas id="live-card-canvas" width="1100" height="696"></canvas>
+                </div>
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- CAMPOS DE ENTRADA POR ETAPA (1 A 9)                   -->
+            <!-- ===================================================== -->
+            <div class="max-w-md mx-auto mt-4">
+
+                <!-- ETAPA 1: NOME COMPLETO -->
+                <div id="input-step-1" class="step-input-group">
+                    <div class="celestial-pill rounded-2xl p-4">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Nome Completo do Titular</label>
+                        <input type="text" id="field-nome" oninput="renderLiveCard()" placeholder="Ex: Brayan Canuto" class="w-full bg-transparent text-lg sm:text-xl font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- ETAPA 2: CARGO MINISTERIAL -->
+                <div id="input-step-2" class="step-input-group hidden">
+                    <div class="celestial-pill rounded-2xl p-4">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Cargo ou Função Ministerial</label>
+                        <input type="text" id="field-cargo" oninput="renderLiveCard()" placeholder="Ex: Ministro de Louvor" class="w-full bg-transparent text-lg sm:text-xl font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- ETAPA 3: NOME DO MINISTÉRIO -->
+                <div id="input-step-3" class="step-input-group hidden">
+                    <div class="celestial-pill rounded-2xl p-4">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Igreja, Missão ou Ministério</label>
+                        <textarea id="field-ministerio" rows="2" oninput="renderLiveCard()" placeholder="Ex: Igreja Batista Getsêmani Do Morro De Santana" class="w-full bg-transparent text-base sm:text-lg font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- ETAPA 4: FOTO + CONTROLES DE ZOOM E POSIÇÃO X/Y -->
+                <div id="input-step-4" class="step-input-group hidden space-y-3">
+                    <input type="file" id="photo-upload-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
+
+                    <button type="button" onclick="document.getElementById('photo-upload-input').click()" class="w-full celestial-pill rounded-2xl p-4 border-dashed border-2 border-gold-400 flex items-center justify-center gap-4 hover:bg-gold-100 transition cursor-pointer">
+                        <div class="w-12 h-14 rounded-lg bg-gold-100 border border-gold-300 overflow-hidden flex items-center justify-center shrink-0">
+                            <img id="thumb-photo-preview" src="" class="hidden w-full h-full object-cover">
+                            <svg id="thumb-photo-icon" class="w-6 h-6 text-gold-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                        </div>
+                        <div class="text-left">
+                            <span class="block text-xs text-gold-700 font-medium">Toque aqui para</span>
+                            <span class="block text-base sm:text-lg font-bold text-gold-800">Enviar Foto de Rosto</span>
+                            <span class="block text-[11px] text-gold-700/75">Galeria ou Câmera do dispositivo</span>
+                        </div>
+                    </button>
+
+                    <!-- Controles Interativos de Zoom e Posição -->
+                    <div id="photo-adjust-controls" class="hidden celestial-pill rounded-2xl p-4 space-y-3">
+                        <div class="flex items-center justify-between text-xs font-bold text-gold-800">
+                            <span>Ajustar Zoom e Posição na Moldura</span>
+                            <button type="button" onclick="resetPhotoTransform()" class="text-gold-600 underline text-[11px]">Centralizar</button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-semibold text-gold-700">
+                            <div>
+                                <label class="flex justify-between mb-1"><span>Zoom</span><span id="zoom-val-label">100%</span></label>
+                                <input type="range" id="photo-zoom" min="1" max="2.6" step="0.05" value="1" oninput="updatePhotoTransform()" class="w-full accent-gold-600">
+                            </div>
+                            <div>
+                                <label class="flex justify-between mb-1"><span>Horizontal X</span><span id="posx-val-label">0px</span></label>
+                                <input type="range" id="photo-pos-x" min="-150" max="150" step="5" value="0" oninput="updatePhotoTransform()" class="w-full accent-gold-600">
+                            </div>
+                            <div>
+                                <label class="flex justify-between mb-1"><span>Vertical Y</span><span id="posy-val-label">0px</span></label>
+                                <input type="range" id="photo-pos-y" min="-150" max="150" step="5" value="0" oninput="updatePhotoTransform()" class="w-full accent-gold-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ETAPA 5: CPF, RG E NASCIMENTO -->
+                <div id="input-step-5" class="step-input-group hidden space-y-3">
+                    <div class="celestial-pill rounded-2xl p-4">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">CPF do Titular (Obrigatório)</label>
+                        <input type="text" id="field-cpf" inputmode="numeric" maxlength="14" oninput="maskCPF(this); renderLiveCard()" placeholder="000.000.000-00" class="w-full bg-transparent text-xl sm:text-2xl font-mono font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="celestial-pill rounded-2xl p-3.5">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">RG (Opcional)</label>
+                            <input type="text" id="field-rg" oninput="renderLiveCard()" placeholder="12.345.678-9" class="w-full bg-transparent text-base font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                        </div>
+                        <div class="celestial-pill rounded-2xl p-3.5">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">Nascimento</label>
+                            <input type="text" id="field-nascimento" inputmode="numeric" maxlength="10" oninput="maskDate(this); renderLiveCard()" placeholder="DD/MM/AAAA" class="w-full bg-transparent text-base font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ETAPA 6: FILIAÇÃO (PAI E MÃE) -->
+                <div id="input-step-6" class="step-input-group hidden space-y-3">
+                    <div class="celestial-pill rounded-2xl p-3.5">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Nome Completo do Pai</label>
+                        <input type="text" id="field-pai" oninput="renderLiveCard()" placeholder="Ex: Adenilson da Silva Canuto" class="w-full bg-transparent text-base sm:text-lg font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                    <div class="celestial-pill rounded-2xl p-3.5">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Nome Completo da Mãe</label>
+                        <input type="text" id="field-mae" oninput="renderLiveCard()" placeholder="Ex: Jocilene da Silva do Nascimento" class="w-full bg-transparent text-base sm:text-lg font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- ETAPA 7: ENDEREÇO DO MINISTÉRIO -->
+                <div id="input-step-7" class="step-input-group hidden">
+                    <div class="celestial-pill rounded-2xl p-4">
+                        <label class="block text-[11px] font-bold tracking-wider text-gold-700 uppercase mb-1">Endereço Completo (Rua, Número, Bairro, Cidade e Estado)</label>
+                        <textarea id="field-endereco" rows="3" oninput="renderLiveCard()" placeholder="Ex: Rua Leopoldina Neves Pinheiro, 140, Centro - Macaé / RJ" class="w-full bg-transparent text-base font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- ETAPA 8: CONTATO, EMISSÃO, VALIDADE E MATRÍCULA -->
+                <div id="input-step-8" class="step-input-group hidden space-y-3">
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="celestial-pill rounded-2xl p-3">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">Data de Emissão</label>
+                            <input type="text" id="field-emissao" inputmode="numeric" maxlength="10" value="23/11/2026" oninput="maskDate(this); syncValidadeFromEmissao(); renderLiveCard()" class="w-full bg-transparent text-base font-semibold text-navy-900 focus:outline-none">
+                        </div>
+                        <div class="celestial-pill rounded-2xl p-3">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">Data de Validade</label>
+                            <input type="text" id="field-validade" inputmode="numeric" maxlength="10" value="23/11/2028" oninput="maskDate(this); renderLiveCard()" class="w-full bg-transparent text-base font-semibold text-navy-900 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="celestial-pill rounded-2xl p-3">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">WhatsApp</label>
+                            <input type="tel" id="field-whatsapp" maxlength="15" oninput="maskPhone(this)" placeholder="(22) 99999-9999" class="w-full bg-transparent text-base font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                        </div>
+                        <div class="celestial-pill rounded-2xl p-3">
+                            <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">Matrícula Única</label>
+                            <input type="text" id="field-matricula-readonly" readonly class="w-full bg-transparent text-xs font-mono font-bold text-navy-900 focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="celestial-pill rounded-2xl p-3">
+                        <label class="block text-[10px] font-bold tracking-wider text-gold-700 uppercase mb-1">E-mail de Cadastro</label>
+                        <input type="email" id="field-email" placeholder="seuemail@exemplo.com" class="w-full bg-transparent text-base font-semibold text-navy-900 placeholder-navy-900/30 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- ETAPA 9: REVISÃO COMPLETA (FRENTE E VERSO) + PAGAMENTO PIX + PDF BINÁRIO NATIVO -->
+                <div id="input-step-9" class="step-input-group hidden space-y-4">
+
+                    <!-- Visualização Simultânea da Frente e do Verso -->
+                    <div class="space-y-3">
+                        <div>
+                            <span class="block text-center text-[11px] font-bold tracking-[0.16em] text-gold-700 uppercase mb-1.5">Frente da Carteirinha</span>
+                            <div class="canvas-preview-frame">
+                                <canvas id="review-front-canvas" width="1100" height="696"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block text-center text-[11px] font-bold tracking-[0.16em] text-gold-700 uppercase mb-1.5">Verso da Carteirinha</span>
+                            <div class="canvas-preview-frame">
+                                <canvas id="review-back-canvas" width="1100" height="696"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox de Confirmação -->
+                    <div class="celestial-pill rounded-2xl p-4 text-left space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gold-300/60 pb-2">
+                            <div>
+                                <span class="text-[10px] font-bold uppercase tracking-wider text-gold-700 block">Matrícula Oficial</span>
+                                <span id="summary-matricula" class="font-mono font-bold text-sm text-navy-900">ACM-2026-0000-0000</span>
+                            </div>
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">100% Legível e Completo</span>
+                        </div>
+
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" id="terms-checkbox" onchange="checkPaymentUnlockState()" class="mt-1 w-4 h-4 accent-gold-600 rounded">
+                            <span class="text-xs text-gold-800 leading-relaxed">
+                                Conferi todos os dados da Frente e do Verso acima e confirmo que estão corretos para emissão da minha Credencial Ministerial.
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- BLOCO DE PAGAMENTO PIX (CHAVE 22998578815) -->
+                    <div id="pix-payment-box" class="celestial-pill rounded-2xl p-4 sm:p-5 border-2 border-gold-400 shadow-lg text-center space-y-3.5">
+                        <div class="flex items-center justify-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <h3 class="font-cinzel font-bold text-base sm:text-lg text-navy-900">Pagamento PIX para Emissão</h3>
+                        </div>
+
+                        <div class="bg-gold-100 border border-gold-300 rounded-xl py-2 px-4 inline-block">
+                            <span class="text-xs text-gold-800 block">Valor da Taxa Ministerial</span>
+                            <span id="pix-display-amount" class="font-playfair font-bold text-2xl text-navy-900">R$ 25,00</span>
+                        </div>
+
+                        <!-- QR Code PIX Oficial em Canvas -->
+                        <div class="flex flex-col items-center">
+                            <div class="w-44 h-44 bg-white p-2.5 rounded-2xl border-2 border-gold-400 shadow-md flex items-center justify-center">
+                                <div id="pix-qr-container" class="w-full h-full"></div>
+                            </div>
+                            <span class="text-[11px] text-gold-800 font-medium mt-2">Escaneie o QR Code PIX no aplicativo do seu banco</span>
+                        </div>
+
+                        <!-- Botões de Cópia PIX -->
+                        <div class="bg-white rounded-xl p-3 border border-gold-300 text-left space-y-2.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <div>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-gold-700 block">Chave PIX (Telefone)</span>
+                                    <span class="font-mono font-bold text-sm sm:text-base text-navy-900">22998578815</span>
+                                </div>
+                                <button type="button" onclick="copyText('22998578815', 'Chave PIX (22998578815) copiada!')" class="px-3 py-2 rounded-xl bg-gold-500 hover:bg-gold-600 text-white text-xs font-bold transition shadow-sm">
+                                    Copiar Chave PIX (22998578815)
+                                </button>
+                            </div>
+
+                            <div class="pt-2 border-t border-gold-200 flex items-center justify-between gap-2">
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-gold-700 block">Código PIX Copia e Cola</span>
+                                    <input type="text" id="pix-brcode-input" readonly class="w-full text-[11px] font-mono text-navy-800 bg-transparent truncate focus:outline-none">
+                                </div>
+                                <button type="button" onclick="copyPixBrCode()" class="px-3 py-2 rounded-xl bg-navy-900 hover:bg-navy-800 text-gold-200 text-xs font-bold transition shrink-0">
+                                    Copiar Código PIX Copia e Cola
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Comprovante (Opcional) + Liberação -->
+                        <div class="pt-1 space-y-2.5">
+                            <input type="file" id="receipt-upload" accept="image/*,.pdf" class="hidden" onchange="handleReceiptUpload(event)">
+                            <button type="button" onclick="document.getElementById('receipt-upload').click()" class="w-full py-2.5 px-3 rounded-xl border border-dashed border-gold-500 bg-white/80 hover:bg-gold-100 text-xs font-semibold text-gold-800 flex items-center justify-center gap-2 transition">
+                                <svg class="w-4 h-4 text-gold-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+                                <span id="receipt-label">Anexar Comprovante PIX (Opcional)</span>
+                            </button>
+
+                            <button type="button" id="confirm-pix-btn" onclick="confirmPixPayment()" disabled class="w-full py-3.5 px-5 rounded-full btn-gold-metallic font-bold text-sm sm:text-base tracking-wider uppercase">
+                                Confirmar Pagamento e Liberar PDF
+                            </button>
+                            <p class="text-[11px] text-gold-700/85">Marque a caixa de confirmação acima para habilitar a liberação.</p>
+                        </div>
+                    </div>
+
+                    <!-- ÁREA DESBLOQUEADA APÓS PAGAMENTO (GERADOR DE PDF NATIVO BINÁRIO) -->
+                    <div id="unlocked-download-box" class="hidden celestial-pill rounded-2xl p-5 border-2 border-emerald-500 bg-emerald-50/80 text-center space-y-3.5 animate-step">
+                        <div class="w-12 h-12 rounded-full bg-emerald-600 text-white mx-auto flex items-center justify-center shadow-md">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="font-cinzel font-bold text-lg text-emerald-900">Credencial Liberada para Download!</h3>
+                            <p class="text-xs text-emerald-800 leading-relaxed">PDF colorido A4 gerado nativamente no seu dispositivo com todas as letras expostas e sem cortes.</p>
+                        </div>
+
+                        <!-- Seletor de Tamanho na Folha A4 -->
+                        <div class="bg-white border border-gold-300 rounded-xl p-3 text-left space-y-2">
+                            <span class="block text-[10px] font-bold uppercase tracking-wider text-gold-700">Escolha o Tamanho de Impressão na Folha A4</span>
+                            <label class="flex items-start gap-2 cursor-pointer p-2 rounded-lg hover:bg-gold-100 transition">
+                                <input type="radio" name="pdf-size-mode" value="cr80" checked class="mt-0.5 accent-gold-600">
+                                <div class="text-xs">
+                                    <span class="font-bold text-navy-900 block">Modo Oficial CR80 (8,56 × 5,40 cm)</span>
+                                    <span class="text-gold-800/80 text-[11px]">Tamanho exato de documento para recortar e plastificar.</span>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-2 cursor-pointer p-2 rounded-lg hover:bg-gold-100 transition">
+                                <input type="radio" name="pdf-size-mode" value="large" class="mt-0.5 accent-gold-600">
+                                <div class="text-xs">
+                                    <span class="font-bold text-navy-900 block">Modo Ampliado (16,0 × 10,1 cm)</span>
+                                    <span class="text-gold-800/80 text-[11px]">Cartão grande centralizado na folha A4, ideal para visualização no celular.</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Botão Principal de Download PDF Binário Nativo -->
+                        <button type="button" id="download-pdf-btn" onclick="exportNativePDF(false)" class="w-full py-4 px-6 rounded-full btn-gold-metallic font-bold text-sm sm:text-base tracking-wider uppercase flex items-center justify-center gap-2">
+                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Baixar Credencial em PDF Colorido</span>
+                        </button>
+
+                        <!-- Botão / Link Alternativo para iOS Safari / Android Share -->
+                        <button type="button" onclick="exportNativePDF(true)" class="w-full py-2.5 px-4 rounded-xl bg-navy-900 text-gold-200 hover:bg-navy-800 text-xs font-bold uppercase tracking-wider transition flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            <span>Abrir PDF em Nova Aba (iPhone / Compartilhar)</span>
+                        </button>
+
+                        <!-- Exportação Individual PNG -->
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button type="button" onclick="downloadSinglePNG('front')" class="py-2.5 px-3 rounded-xl bg-white border border-gold-400 text-xs font-bold text-navy-900 hover:bg-gold-100 transition">
+                                Salvar Frente (PNG)
+                            </button>
+                            <button type="button" onclick="downloadSinglePNG('back')" class="py-2.5 px-3 rounded-xl bg-white border border-gold-400 text-xs font-bold text-navy-900 hover:bg-gold-100 transition">
+                                Salvar Verso (PNG)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÕES DE NAVEGAÇÃO -->
+                <div class="mt-6 space-y-3">
+                    <button type="button" id="next-step-btn" onclick="nextStep()" class="w-full py-4 px-8 rounded-full btn-gold-metallic font-bold tracking-[0.16em] text-base sm:text-lg uppercase">
+                        Continuar
+                    </button>
+
+                    <div class="text-center">
+                        <button type="button" onclick="prevStep()" class="inline-flex items-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold tracking-[0.16em] text-gold-700 hover:text-gold-800 uppercase transition">
+                            <span>&lt;</span> Voltar
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================================= -->
+    <!-- MODAL DE CONFIGURAÇÕES DA SECRETARIA                      -->
+    <!-- ========================================================= -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden bg-navy-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-[#FBF8F1] border-2 border-gold-400 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-gold-300 pb-3">
+                <h3 class="font-cinzel font-bold text-lg text-gold-800">Configurações da Secretaria</h3>
+                <button onclick="closeSettingsModal()" class="p-1.5 rounded-full hover:bg-gold-200 text-gold-800">✕</button>
+            </div>
+
+            <div class="space-y-3 text-left">
+                <div>
+                    <label class="block text-xs font-bold text-gold-800 uppercase mb-1">Valor da Taxa PIX (R$)</label>
+                    <input type="number" step="0.01" id="cfg-pix-amount" value="25.00" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gold-300 font-semibold text-navy-900">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gold-800 uppercase mb-1">Nome do Recebedor PIX</label>
+                    <input type="text" id="cfg-pix-receiver" value="SECRETARIA MINISTERIAL" maxlength="25" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gold-300 font-semibold text-navy-900">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gold-800 uppercase mb-1">Cidade do Recebedor PIX</label>
+                    <input type="text" id="cfg-pix-city" value="MACAE" maxlength="15" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-gold-300 font-semibold text-navy-900">
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-bold text-gold-800 uppercase mb-1">Assinatura no Verso</label>
+                        <input type="text" id="cfg-pastor-name" value="Presidência Ministerial" class="w-full px-3 py-2.5 rounded-xl bg-white border border-gold-300 font-semibold text-navy-900 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gold-800 uppercase mb-1">Validade (Anos)</label>
+                        <input type="number" min="1" max="10" id="cfg-validity-years" value="2" class="w-full px-3 py-2.5 rounded-xl bg-white border border-gold-300 font-semibold text-navy-900 text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-2">
+                <button type="button" onclick="saveSettings()" class="w-full py-3 rounded-full btn-gold-metallic font-bold text-sm uppercase tracking-wider">Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // ESTADO GLOBAL E CONFIGURAÇÕES DA SECRETARIA
+        // =========================================================================
+        let currentStep = 0;
+        let currentCardSide = 'front';
+        let userPhotoImg = null;
+        let photoTransform = { zoom: 1, x: 0, y: 0 };
+        let cardAuthQRImage = null;
+
+        const churchConfig = {
+            pixKey: '22998578815',
+            pixAmount: 25.00,
+            pixReceiver: 'SECRETARIA MINISTERIAL',
+            pixCity: 'MACAE',
+            pastorSignature: 'Presidência Ministerial',
+            validityYears: 2
+        };
+
+        const allMinisterialRoles = [
+            'Pastor', 'Missionário', 'Diácono', 'Presbítero',
+            'Apóstolo', 'Bispo', 'Obreiro', 'Evangelista',
+            'Levita', 'Ministério de louvor', 'Ministério de mídia', 'Conselheiro',
+            'Capelão voluntário', 'Quem visita presídios', 'Quem visita hospitais', 'Membro'
+        ];
+
+        const stepsMeta = {
+            1: { title: 'Qual é o seu nome completo?', subtitle: 'É o nome que aparece em destaque na frente da carteirinha.', side: 'front', highlight: 'nome' },
+            2: { title: 'Qual é o seu cargo ministerial?', subtitle: 'Escreva como deve aparecer na frente da carteirinha.', side: 'front', highlight: 'cargo' },
+            3: { title: 'Qual é o nome do ministério?', subtitle: 'Igreja, missão ou ministério que você representa.', side: 'front', highlight: 'ministerio' },
+            4: { title: 'Envie a sua foto', subtitle: 'Foto de rosto, de frente e com boa luz. Depois ajuste o zoom e a posição.', side: 'front', highlight: 'foto' },
+            5: { title: 'Qual é o seu CPF e RG?', subtitle: 'Somente números: a pontuação entra sozinha.', side: 'back', highlight: 'cpf' },
+            6: { title: 'Qual é a sua filiação?', subtitle: 'Nome completo do pai e da mãe, como consta no documento.', side: 'back', highlight: 'filiacao' },
+            7: { title: 'Qual é o endereço do ministério?', subtitle: 'Rua, número, bairro, cidade e estado.', side: 'back', highlight: 'endereco' },
+            8: { title: 'Dados de Contato e Emissão', subtitle: 'E-mail, WhatsApp, datas de emissão/validade e matrícula única.', side: 'back', highlight: 'matricula' },
+            9: { title: 'Revisão Final e Emissão PDF', subtitle: 'Confira frente e verso, conclua o PIX e baixe seu PDF colorido.', side: 'front', highlight: '' }
+        };
+
+        const generatedMatricula = `ACM-2026-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+        // =========================================================================
+        // INICIALIZAÇÃO
+        // =========================================================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            renderRolesGrid();
+            document.getElementById('summary-matricula').textContent = generatedMatricula;
+            document.getElementById('field-matricula-readonly').value = generatedMatricula;
+            updatePixPayloadAndQR();
+
+            if (document.fonts && document.fonts.ready) {
+                await document.fonts.ready;
+            }
+            await rebuildCardAuthQR();
+            renderLiveCard();
+        });
+
+        function renderRolesGrid() {
+            const grid = document.getElementById('roles-grid');
+            grid.innerHTML = '';
+            allMinisterialRoles.forEach(role => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'celestial-pill py-3 px-4 rounded-2xl flex items-center justify-center gap-2 text-sm font-bold text-gold-800 hover:scale-[1.01] active:scale-[0.99] transition';
+                btn.innerHTML = `
+                    <svg class="w-4 h-4 text-gold-400 shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <span>${role}</span>
+                `;
+                btn.onclick = () => {
+                    document.getElementById('field-cargo').value = role;
+                    renderLiveCard();
+                    showToast(`Cargo "${role}" selecionado!`, 'info');
+                    goToStep(1);
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectCustomStartRole() {
+            const val = document.getElementById('custom-role-start').value.trim();
+            if (!val) {
+                showToast('Digite o nome do seu cargo ou função.', 'warn');
+                return;
+            }
+            document.getElementById('field-cargo').value = val;
+            renderLiveCard();
+            goToStep(1);
+        }
+
+        // =========================================================================
+        // NAVEGAÇÃO ENTRE ETAPAS (0 A 9)
+        // =========================================================================
+        async function goToStep(step) {
+            if (step < 0) step = 0;
+            if (step > 9) step = 9;
+
+            if (step > currentStep && currentStep > 0) {
+                if (currentStep === 1 && !document.getElementById('field-nome').value.trim()) {
+                    showToast('Por favor, informe o seu nome completo.', 'warn');
+                    document.getElementById('field-nome').focus();
+                    return;
+                }
+                if (currentStep === 2 && !document.getElementById('field-cargo').value.trim()) {
+                    showToast('Informe o seu cargo ministerial.', 'warn');
+                    document.getElementById('field-cargo').focus();
+                    return;
+                }
+                if (currentStep === 3 && !document.getElementById('field-ministerio').value.trim()) {
+                    showToast('Informe o nome da igreja ou ministério.', 'warn');
+                    document.getElementById('field-ministerio').focus();
+                    return;
+                }
+                if (currentStep === 5) {
+                    const cpfDigits = document.getElementById('field-cpf').value.replace(/\D/g, '');
+                    if (cpfDigits.length !== 11) {
+                        showToast('Digite os 11 números do seu CPF.', 'warn');
+                        document.getElementById('field-cpf').focus();
+                        return;
+                    }
+                }
+            }
+
+            currentStep = step;
+
+            if (step === 0) {
+                document.getElementById('step-0').classList.remove('hidden');
+                document.getElementById('wizard-container').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('step-0').classList.add('hidden');
+            document.getElementById('wizard-container').classList.remove('hidden');
+
+            const meta = stepsMeta[step];
+            document.getElementById('step-number').textContent = step;
+            document.getElementById('progress-bar').style.width = `${(step / 9) * 100}%`;
+            document.getElementById('step-title').textContent = meta.title;
+            document.getElementById('step-subtitle').textContent = meta.subtitle;
+
+            document.querySelectorAll('.step-input-group').forEach(el => el.classList.add('hidden'));
+            const activeInput = document.getElementById(`input-step-${step}`);
+            if (activeInput) activeInput.classList.remove('hidden');
+
+            const singlePreview = document.getElementById('single-preview-wrapper');
+            const nextBtn = document.getElementById('next-step-btn');
+
+            if (step === 9) {
+                singlePreview.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                await rebuildCardAuthQR();
+                drawCardFrontToCanvas(document.getElementById('review-front-canvas'), '');
+                drawCardBackToCanvas(document.getElementById('review-back-canvas'), '');
+                updatePixPayloadAndQR();
+            } else {
+                singlePreview.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+                setCardSide(meta.side);
+            }
+        }
+
+        function nextStep() { goToStep(currentStep + 1); }
+        function prevStep() { goToStep(currentStep - 1); }
+
+        function setCardSide(side) {
+            currentCardSide = side;
+            const frontBtn = document.getElementById('tab-front-btn');
+            const backBtn = document.getElementById('tab-back-btn');
+
+            if (side === 'front') {
+                frontBtn.className = 'px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-navy-900 text-gold-200 shadow-sm';
+                backBtn.className = 'px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-white/90 text-gold-800 border border-gold-300';
+            } else {
+                backBtn.className = 'px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-navy-900 text-gold-200 shadow-sm';
+                frontBtn.className = 'px-3.5 py-1.5 rounded-full text-[11px] font-bold tracking-wider uppercase transition bg-white/90 text-gold-800 border border-gold-300';
+            }
+            renderLiveCard();
+        }
+
+        // =========================================================================
+        // MÁSCARAS E DATAS
+        // =========================================================================
+        function maskCPF(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 11);
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d)/, '$1.$2');
+            v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            input.value = v;
+        }
+
+        function maskDate(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 8);
+            v = v.replace(/(\d{2})(\d)/, '$1/$2');
+            v = v.replace(/(\d{2})(\d)/, '$1/$2');
+            input.value = v;
+        }
+
+        function maskPhone(input) {
+            let v = input.value.replace(/\D/g, '').slice(0, 11);
+            v = v.replace(/^(\d{2})(\d)/g, '($1) $2');
+            v = v.replace(/(\d)(\d{4})$/, '$1-$2');
+            input.value = v;
+        }
+
+        function syncValidadeFromEmissao() {
+            const val = document.getElementById('field-emissao').value;
+            if (val.length === 10) {
+                const parts = val.split('/');
+                const year = parseInt(parts[2], 10);
+                if (!isNaN(year)) {
+                    document.getElementById('field-validade').value = `${parts[0]}/${parts[1]}/${year + churchConfig.validityYears}`;
+                }
+            }
+        }
+
+        // =========================================================================
+        // UPLOAD E CONTROLES DE ZOOM/POSIÇÃO DA FOTO
+        // =========================================================================
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    userPhotoImg = img;
+                    const thumb = document.getElementById('thumb-photo-preview');
+                    thumb.src = e.target.result;
+                    thumb.classList.remove('hidden');
+                    document.getElementById('thumb-photo-icon').classList.add('hidden');
+                    document.getElementById('photo-adjust-controls').classList.remove('hidden');
+                    resetPhotoTransform();
+                    showToast('Foto carregada! Ajuste o zoom e a posição abaixo.', 'success');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updatePhotoTransform() {
+            const zoom = parseFloat(document.getElementById('photo-zoom').value);
+            const x = parseFloat(document.getElementById('photo-pos-x').value);
+            const y = parseFloat(document.getElementById('photo-pos-y').value);
+            photoTransform = { zoom, x, y };
+
+            document.getElementById('zoom-val-label').textContent = `${Math.round(zoom * 100)}%`;
+            document.getElementById('posx-val-label').textContent = `${x}px`;
+            document.getElementById('posy-val-label').textContent = `${y}px`;
+            renderLiveCard();
+        }
+
+        function resetPhotoTransform() {
+            document.getElementById('photo-zoom').value = 1;
+            document.getElementById('photo-pos-x').value = 0;
+            document.getElementById('photo-pos-y').value = 0;
+            updatePhotoTransform();
+        }
+
+        // =========================================================================
+        // QR CODE DE VALIDAÇÃO DO VERSO
+        // =========================================================================
+        function rebuildCardAuthQR() {
+            return new Promise((resolve) => {
+                const container = document.getElementById('hidden-card-qr-generator');
+                container.innerHTML = '';
+                const nome = document.getElementById('field-nome').value.trim() || 'Membro';
+                const cpf = document.getElementById('field-cpf').value.trim() || '000.000.000-00';
+                const cargo = document.getElementById('field-cargo').value.trim() || 'Ministro';
+
+                new QRCode(container, {
+                    text: `CREDENCIAL MINISTERIAL\nMatricula: ${generatedMatricula}\nTitular: ${nome}\nCargo: ${cargo}\nCPF: ${cpf}`,
+                    width: 260,
+                    height: 260,
+                    colorDark: '#091B3A',
+                    colorLight: '#FFFFFF',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+
+                setTimeout(() => {
+                    const qrCanvas = container.querySelector('canvas');
+                    const qrImg = container.querySelector('img');
+                    cardAuthQRImage = qrCanvas || qrImg;
+                    resolve();
+                }, 60);
+            });
+        }
+
+        // =========================================================================
+        // MOTOR GRÁFICO CANVAS (1100 x 696 px) — LETRAS 100% EXPOSTAS SEM CORTES
+        // =========================================================================
+        function getCardData() {
+            return {
+                nome: document.getElementById('field-nome')?.value.trim() || 'Seu Nome Completo',
+                cargo: document.getElementById('field-cargo')?.value.trim() || 'Ministro / Obreiro',
+                ministerio: document.getElementById('field-ministerio')?.value.trim() || 'Nome da Igreja ou Ministério',
+                cpf: document.getElementById('field-cpf')?.value.trim() || '000.000.000-00',
+                rg: document.getElementById('field-rg')?.value.trim() || '',
+                pai: document.getElementById('field-pai')?.value.trim() || 'Nome Completo do Pai',
+                mae: document.getElementById('field-mae')?.value.trim() || 'Nome Completo da Mãe',
+                endereco: document.getElementById('field-endereco')?.value.trim() || 'Rua, número, bairro, cidade e estado',
+                nascimento: document.getElementById('field-nascimento')?.value.trim() || '--/--/----',
+                emissao: document.getElementById('field-emissao')?.value.trim() || '23/11/2026',
+                validade: document.getElementById('field-validade')?.value.trim() || '23/11/2028',
+                matricula: generatedMatricula,
+                pastor: churchConfig.pastorSignature
+            };
+        }
+
+        // Função obrigatória de quebra e ajuste automático sem cortar letras ou palavras
+        function wrapAndFitText(ctx, text, x, y, maxWidth, lineHeight, maxLines, baseFontSize, fontFamily, fontWeight, color, align = 'left') {
+            const cleanText = String(text || '').trim();
+            if (!cleanText) return 0;
+
+            let size = baseFontSize;
+            let lines = [];
+
+            while (size >= 11) {
+                ctx.font = `${fontWeight} ${size}px ${fontFamily}`;
+                const words = cleanText.split(/\s+/);
+                lines = [];
+                let currentLine = '';
+
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    if (ctx.measureText(word).width > maxWidth) {
+                        if (currentLine) {
+                            lines.push(currentLine);
+                            currentLine = '';
+                        }
+                        let chunk = '';
+                        for (const ch of word) {
+                            if (ctx.measureText(chunk + ch).width > maxWidth) {
+                                lines.push(chunk);
+                                chunk = ch;
+                            } else {
+                                chunk += ch;
+                            }
+                        }
+                        currentLine = chunk;
+                    } else {
+                        const testLine = currentLine ? `${currentLine} ${word}` : word;
+                        if (ctx.measureText(testLine).width <= maxWidth) {
+                            currentLine = testLine;
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = word;
+                        }
+                    }
+                }
+                if (currentLine) lines.push(currentLine);
+
+                if (lines.length <= maxLines) break;
+                size -= 1;
+            }
+
+            ctx.font = `${fontWeight} ${size}px ${fontFamily}`;
+            ctx.fillStyle = color;
+            ctx.textAlign = align;
+            ctx.textBaseline = 'top';
+            const scaledLH = Math.round(size * (lineHeight / baseFontSize));
+            lines.slice(0, maxLines).forEach((line, idx) => {
+                ctx.fillText(line, x, y + idx * scaledLH);
+            });
+            return lines.length * scaledLH;
+        }
+
+        function drawRoundedRectPath(ctx, x, y, w, h, r) {
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+        }
+
+        // Fundo Celestial Marfim/Dourado + Onda Dupla Azul Marinho (#091B3A)
+        function drawCardBaseArtwork(ctx, W, H, isBack = false) {
+            const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+            bgGrad.addColorStop(0, '#FDFBF5');
+            bgGrad.addColorStop(0.55, '#F7EFE0');
+            bgGrad.addColorStop(1, '#F4EAD4');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Iluminação celestial superior
+            const sunGrad = ctx.createRadialGradient(W * 0.5, H * 0.04, 10, W * 0.5, H * 0.04, W * 0.62);
+            sunGrad.addColorStop(0, 'rgba(255, 255, 255, 0.96)');
+            sunGrad.addColorStop(0.55, 'rgba(247, 232, 188, 0.44)');
+            sunGrad.addColorStop(1, 'rgba(253, 251, 245, 0)');
+            ctx.fillStyle = sunGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Arcos arquitetônicos dourados suaves
+            ctx.save();
+            ctx.strokeStyle = 'rgba(200, 162, 74, 0.34)';
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.moveTo(95, H - 80);
+            ctx.lineTo(95, 230);
+            ctx.bezierCurveTo(95, 70, 320, 16, W / 2, 16);
+            ctx.bezierCurveTo(W - 320, 16, W - 95, 70, W - 95, 230);
+            ctx.lineTo(W - 95, H - 80);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(200, 162, 74, 0.22)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.moveTo(138, H - 80);
+            ctx.lineTo(138, 240);
+            ctx.bezierCurveTo(138, 100, 345, 48, W / 2, 48);
+            ctx.bezierCurveTo(W - 345, 48, W - 138, 100, W - 138, 240);
+            ctx.lineTo(W - 138, H - 80);
+            ctx.stroke();
+            ctx.restore();
+
+            // Nuvens suaves nas laterais
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.72)';
+            ctx.beginPath(); ctx.ellipse(175, 515, 255, 86, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.ellipse(W - 175, 498, 265, 96, 0, 0, Math.PI * 2); ctx.fill();
+
+            // Onda Dourada Metálica
+            const goldGrad = ctx.createLinearGradient(0, 480, W, 640);
+            goldGrad.addColorStop(0, '#966B1D');
+            goldGrad.addColorStop(0.32, '#E2BE6F');
+            goldGrad.addColorStop(0.68, '#C99A3B');
+            goldGrad.addColorStop(1, '#966B1D');
+
+            const waveStartY = isBack ? 500 : 512;
+            const waveCtrl1Y = isBack ? 626 : 636;
+            const waveMidY   = isBack ? 536 : 546;
+            const waveEndY   = isBack ? 472 : 478;
+
+            ctx.fillStyle = goldGrad;
+            ctx.beginPath();
+            ctx.moveTo(0, waveStartY);
+            ctx.quadraticCurveTo(295, waveCtrl1Y, 588, waveMidY);
+            ctx.quadraticCurveTo(855, waveMidY - 65, W, waveEndY);
+            ctx.lineTo(W, H);
+            ctx.lineTo(0, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // Base Curva Azul-Marinho Profundo (#091B3A)
+            const navyGrad = ctx.createLinearGradient(0, 510, W, H);
+            navyGrad.addColorStop(0, '#0C234B');
+            navyGrad.addColorStop(0.5, '#091B3A');
+            navyGrad.addColorStop(1, '#051024');
+
+            ctx.fillStyle = navyGrad;
+            ctx.beginPath();
+            ctx.moveTo(0, waveStartY + 24);
+            ctx.quadraticCurveTo(295, waveCtrl1Y + 20, 588, waveMidY + 20);
+            ctx.quadraticCurveTo(855, waveMidY - 45, W, waveEndY + 24);
+            ctx.lineTo(W, H);
+            ctx.lineTo(0, H);
+            ctx.closePath();
+            ctx.fill();
+
+            // Filete Dourado Metálico (#D4AF37)
+            ctx.strokeStyle = '#D4AF37';
+            ctx.lineWidth = 2.6;
+            ctx.beginPath();
+            ctx.moveTo(0, waveStartY + 35);
+            ctx.quadraticCurveTo(295, waveCtrl1Y + 31, 588, waveMidY + 31);
+            ctx.quadraticCurveTo(855, waveMidY - 34, W, waveEndY + 35);
+            ctx.stroke();
+
+            // Brilhos sutis
+            ctx.fillStyle = 'rgba(245, 223, 156, 0.85)';
+            ctx.beginPath(); ctx.arc(680, 595, 2.2, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(1010, 558, 2.5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(175, 646, 2.0, 0, Math.PI * 2); ctx.fill();
+
+            // Borda arredondada fina dourada (#C8A24A)
+            ctx.save();
+            drawRoundedRectPath(ctx, 2, 2, W - 4, H - 4, 22);
+            ctx.strokeStyle = '#C8A24A';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawCardHeader(ctx, W, topY = 24) {
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.font = '700 44px Cinzel, serif';
+            ctx.fillStyle = '#8A6212';
+            ctx.fillText('CREDENCIAL', W / 2, topY);
+
+            const subY = topY + 48;
+            ctx.font = '700 16px Cinzel, serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('M I N I S T E R I A L', W / 2, subY);
+
+            ctx.strokeStyle = '#C8A24A';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(W / 2 - 205, subY + 9);
+            ctx.lineTo(W / 2 - 122, subY + 9);
+            ctx.moveTo(W / 2 + 122, subY + 9);
+            ctx.lineTo(W / 2 + 205, subY + 9);
+            ctx.stroke();
+        }
+
+        // =========================================================================
+        // FRENTE DA CREDENCIAL (1100 x 696 px)
+        // =========================================================================
+        function drawCardFrontToCanvas(canvas, activeHighlight = '') {
+            const ctx = canvas.getContext('2d');
+            const W = 1100;
+            const H = 696;
+            const data = getCardData();
+
+            ctx.clearRect(0, 0, W, H);
+            drawCardBaseArtwork(ctx, W, H, false);
+            drawCardHeader(ctx, W, 24);
+
+            // Esquerda: Moldura de retrato arredondada (235 x 295 px) com borda dupla dourada
+            const fx = 46, fy = 142, fw = 235, fh = 295;
+            const frameGrad = ctx.createLinearGradient(fx, fy, fx + fw, fy + fh);
+            frameGrad.addColorStop(0, '#E2BE6F');
+            frameGrad.addColorStop(0.5, '#C99A3B');
+            frameGrad.addColorStop(1, '#966B1D');
+
+            ctx.save();
+            ctx.shadowColor = 'rgba(9, 27, 58, 0.24)';
+            ctx.shadowBlur = 18;
+            ctx.shadowOffsetY = 6;
+            drawRoundedRectPath(ctx, fx, fy, fw, fh, 22);
+            ctx.fillStyle = frameGrad;
+            ctx.fill();
+            ctx.restore();
+
+            // Filete interno da borda dupla dourada
+            drawRoundedRectPath(ctx, fx + 4, fy + 4, fw - 8, fh - 8, 19);
+            ctx.strokeStyle = '#FFF5D6';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Área útil da foto
+            const ix = fx + 8, iy = fy + 8, iw = fw - 16, ih = fh - 16;
+            ctx.save();
+            drawRoundedRectPath(ctx, ix, iy, iw, ih, 16);
+            ctx.clip();
+
+            ctx.fillStyle = '#F1F5F9';
+            ctx.fillRect(ix, iy, iw, ih);
+
+            if (userPhotoImg) {
+                const imgRatio = userPhotoImg.width / userPhotoImg.height;
+                const boxRatio = iw / ih;
+                let baseW, baseH;
+                if (imgRatio > boxRatio) {
+                    baseH = ih;
+                    baseW = ih * imgRatio;
+                } else {
+                    baseW = iw;
+                    baseH = iw / imgRatio;
+                }
+                const drawW = baseW * photoTransform.zoom;
+                const drawH = baseH * photoTransform.zoom;
+                const drawX = ix + (iw - drawW) / 2 + photoTransform.x;
+                const drawY = iy + (ih - drawH) / 2 + photoTransform.y;
+                ctx.drawImage(userPhotoImg, drawX, drawY, drawW, drawH);
+            } else {
+                ctx.fillStyle = 'rgba(201, 154, 59, 0.22)';
+                ctx.beginPath(); ctx.arc(ix + iw / 2, iy + ih * 0.38, 38, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(ix + iw / 2, iy + ih * 0.85, 68, Math.PI, 0); ctx.fill();
+                ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+                ctx.fillStyle = '#8A6212';
+                ctx.textAlign = 'center';
+                ctx.fillText('SUA FOTO', ix + iw / 2, iy + ih - 36);
+            }
+            ctx.restore();
+
+            // Centro: Campos bem espaçados (x = 312, maxWidth = 540px — nunca encosta na cruz da direita)
+            const colX = 312;
+            const colMaxW = 540;
+
+            function drawHighlightBox(y, h) {
+                drawRoundedRectPath(ctx, colX - 10, y - 5, colMaxW + 20, h + 10, 10);
+                ctx.fillStyle = 'rgba(251, 241, 208, 0.92)';
+                ctx.fill();
+                ctx.strokeStyle = '#C99A3B';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // 1. NOME COMPLETO
+            let curY = 140;
+            if (activeHighlight === 'nome') drawHighlightBox(curY, 56);
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText('NOME COMPLETO', colX, curY);
+            wrapAndFitText(ctx, data.nome, colX, curY + 18, colMaxW, 32, 1, 28, '"Playfair Display", serif', '800', '#0B192C');
+
+            curY += 62;
+            ctx.strokeStyle = 'rgba(200, 162, 74, 0.42)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath(); ctx.moveTo(colX, curY); ctx.lineTo(colX + colMaxW, curY); ctx.stroke();
+
+            // 2. CARGO / FUNÇÃO
+            curY += 10;
+            if (activeHighlight === 'cargo') drawHighlightBox(curY, 54);
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('CARGO / FUNÇÃO', colX, curY);
+            wrapAndFitText(ctx, data.cargo, colX, curY + 18, colMaxW, 28, 1, 25, '"Playfair Display", serif', '700', '#0B192C');
+
+            curY += 58;
+            ctx.beginPath(); ctx.moveTo(colX, curY); ctx.lineTo(colX + colMaxW, curY); ctx.stroke();
+
+            // 3. MINISTÉRIO (suporta até 2 linhas com quebra automática limpa)
+            curY += 10;
+            if (activeHighlight === 'ministerio') drawHighlightBox(curY, 76);
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('MINISTÉRIO', colX, curY);
+            wrapAndFitText(ctx, data.ministerio, colX, curY + 18, colMaxW, 28, 2, 24, '"Playfair Display", serif', '700', '#0B192C');
+
+            curY += 80;
+            ctx.beginPath(); ctx.moveTo(colX, curY); ctx.lineTo(colX + colMaxW, curY); ctx.stroke();
+
+            // 4. EMISSÃO e VALIDADE lado a lado
+            curY += 10;
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('EMISSÃO', colX, curY);
+            ctx.fillText('VALIDADE', colX + 210, curY);
+
+            ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#0B192C';
+            ctx.fillText(data.emissao, colX, curY + 18);
+            ctx.fillText(data.validade, colX + 210, curY + 18);
+
+            // Direita: Cruz dourada elegante acima de "SERVINDO AO REINO DE DEUS"
+            const cx = 995;
+            ctx.strokeStyle = 'rgba(200, 162, 74, 0.72)';
+            ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(cx, 158); ctx.lineTo(cx, 194); ctx.stroke();
+
+            ctx.fillStyle = '#B08226';
+            ctx.fillRect(cx - 4, 206, 8, 66);
+            ctx.fillRect(cx - 22, 224, 44, 8);
+
+            ctx.textAlign = 'center';
+            ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#6E4C10';
+            ctx.fillText('SERVINDO', cx, 286);
+            ctx.fillText('AO REINO', cx, 302);
+            ctx.fillText('DE DEUS', cx, 318);
+
+            ctx.beginPath(); ctx.moveTo(cx, 342); ctx.lineTo(cx, 378); ctx.stroke();
+
+            // Base Inferior Esquerda: "Chamados" + "PARA FAZER A DIFERENÇA"
+            ctx.textAlign = 'left';
+            ctx.font = '44px "Great Vibes", cursive';
+            ctx.fillStyle = '#8A6212';
+            ctx.fillText('Chamados', 48, 495);
+
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#3D2804';
+            ctx.fillText('PARA FAZER', 78, 542);
+            ctx.fillText('A DIFERENÇA', 78, 558);
+
+            // Base Inferior Direita na faixa azul-marinho: "ATÉ OS CONFINS DA TERRA"
+            ctx.textAlign = 'center';
+            ctx.font = '700 19px Cinzel, serif';
+            ctx.fillStyle = '#F5DF9C';
+            ctx.fillText('ATÉ OS CONFINS', 895, 582);
+
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath(); ctx.moveTo(785, 610); ctx.lineTo(1005, 610); ctx.stroke();
+
+            ctx.font = '700 18px Cinzel, serif';
+            ctx.fillText('DA TERRA', 895, 619);
+        }
+
+        // Ícones Circulares Dourados para o Verso
+        function drawBackBadgeIcon(ctx, cx, cy, type) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 21, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+            ctx.strokeStyle = '#C99A3B';
+            ctx.lineWidth = 2.2;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#8A6212';
+            ctx.fillStyle = '#8A6212';
+            ctx.lineWidth = 2;
+
+            if (type === 'person') {
+                ctx.beginPath(); ctx.arc(cx, cy - 4, 5, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx, cy + 11, 9, Math.PI, 0); ctx.stroke();
+            } else if (type === 'family') {
+                ctx.beginPath(); ctx.arc(cx - 4, cy - 4, 4, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx + 5, cy - 3, 3.6, 0, Math.PI * 2); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx - 4, cy + 10, 7.5, Math.PI, 0); ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx + 5, cy + 10, 6.5, Math.PI, 0); ctx.stroke();
+            } else if (type === 'doc') {
+                ctx.strokeRect(cx - 7, cy - 9, 14, 18);
+                ctx.beginPath();
+                ctx.moveTo(cx - 3.5, cy - 3.5); ctx.lineTo(cx + 3.5, cy - 3.5);
+                ctx.moveTo(cx - 3.5, cy + 1); ctx.lineTo(cx + 3.5, cy + 1);
+                ctx.moveTo(cx - 3.5, cy + 5.5); ctx.lineTo(cx + 2, cy + 5.5);
+                ctx.stroke();
+            } else if (type === 'pin') {
+                ctx.beginPath();
+                ctx.arc(cx, cy - 3, 5.8, Math.PI, 0);
+                ctx.lineTo(cx, cy + 10);
+                ctx.closePath();
+                ctx.stroke();
+                ctx.beginPath(); ctx.arc(cx, cy - 3, 2, 0, Math.PI * 2); ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        // =========================================================================
+        // VERSO DA CREDENCIAL (1100 x 696 px)
+        // =========================================================================
+        function drawCardBackToCanvas(canvas, activeHighlight = '') {
+            const ctx = canvas.getContext('2d');
+            const W = 1100;
+            const H = 696;
+            const data = getCardData();
+
+            ctx.clearRect(0, 0, W, H);
+            drawCardBaseArtwork(ctx, W, H, true);
+            drawCardHeader(ctx, W, 22);
+
+            // Esquerda: largura útil de 660px (ícone em x=66, texto em x=104 com maxWidth=610px)
+            const iconX = 66;
+            const textX = 104;
+            const textMaxW = 610;
+
+            function drawBackHighlight(y, h) {
+                drawRoundedRectPath(ctx, 38, y - 5, 690, h + 10, 10);
+                ctx.fillStyle = 'rgba(251, 241, 208, 0.92)';
+                ctx.fill();
+                ctx.strokeStyle = '#C99A3B';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // 1. CPF / DOCUMENTO
+            let curY = 128;
+            if (activeHighlight === 'cpf') drawBackHighlight(curY, 50);
+            drawBackBadgeIcon(ctx, iconX, curY + 21, 'person');
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('CPF / DOCUMENTO', textX, curY);
+
+            const docText = data.rg ? `${data.cpf}  •  RG: ${data.rg}` : data.cpf;
+            wrapAndFitText(ctx, docText, textX, curY + 17, textMaxW, 26, 1, 22, '"Plus Jakarta Sans", sans-serif', '800', '#0B192C');
+
+            curY += 56;
+            ctx.strokeStyle = 'rgba(200, 162, 74, 0.38)';
+            ctx.lineWidth = 1.4;
+            ctx.beginPath(); ctx.moveTo(textX, curY); ctx.lineTo(textX + textMaxW, curY); ctx.stroke();
+
+            // 2. FILIAÇÃO (Pai na linha 1 e Mãe na linha 2)
+            curY += 10;
+            if (activeHighlight === 'filiacao') drawBackHighlight(curY, 74);
+            drawBackBadgeIcon(ctx, iconX, curY + 32, 'family');
+            ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('FILIAÇÃO', textX, curY);
+            wrapAndFitText(ctx, data.pai, textX, curY + 17, textMaxW, 25, 1, 21, '"Playfair Display", serif', '700', '#0B192C');
+            wrapAndFitText(ctx, data.mae, textX, curY + 44, textMaxW, 25, 1, 21, '"Playfair Display", serif', '700', '#0B192C');
+
+            curY += 78;
+            ctx.beginPath(); ctx.moveTo(textX, curY); ctx.lineTo(textX + textMaxW, curY); ctx.stroke();
+
+            // 3. MATRÍCULA à esquerda e NASCIMENTO à direita
+            curY += 10;
+            if (activeHighlight === 'matricula') drawBackHighlight(curY, 50);
+            drawBackBadgeIcon(ctx, iconX, curY + 21, 'doc');
+            ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('MATRÍCULA', textX, curY);
+            ctx.fillText('NASCIMENTO', textX + 410, curY);
+
+            ctx.font = '800 20px monospace';
+            ctx.fillStyle = '#0B192C';
+            ctx.fillText(data.matricula, textX, curY + 17);
+
+            ctx.font = '800 20px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(data.nascimento, textX + 410, curY + 17);
+
+            curY += 56;
+            ctx.beginPath(); ctx.moveTo(textX, curY); ctx.lineTo(textX + textMaxW, curY); ctx.stroke();
+
+            // 4. ENDEREÇO DO MINISTÉRIO (quebra automática em até 2 linhas, maxWidth: 610px)
+            curY += 10;
+            if (activeHighlight === 'endereco') drawBackHighlight(curY, 74);
+            drawBackBadgeIcon(ctx, iconX, curY + 24, 'pin');
+            ctx.font = '800 12px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#9A7422';
+            ctx.fillText('ENDEREÇO DO MINISTÉRIO', textX, curY);
+            wrapAndFitText(ctx, data.endereco, textX, curY + 17, textMaxW, 25, 2, 20, '"Playfair Display", serif', '700', '#0B192C');
+
+            // Direita: QR Code de validação real com moldura dourada (195 x 195 px)
+            const qx = 842, qy = 165, qs = 195;
+            ctx.save();
+            ctx.shadowColor = 'rgba(9, 27, 58, 0.18)';
+            ctx.shadowBlur = 16;
+            ctx.shadowOffsetY = 5;
+            drawRoundedRectPath(ctx, qx, qy, qs, qs, 20);
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fill();
+            ctx.strokeStyle = '#C8A24A';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+
+            if (cardAuthQRImage) {
+                ctx.drawImage(cardAuthQRImage, qx + 13, qy + 13, qs - 26, qs - 26);
+            }
+
+            ctx.textAlign = 'center';
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#3D2804';
+            ctx.fillText('Aponte a câmera do celular', qx + qs / 2, qy + qs + 12);
+            ctx.fillText('para o QR CODE', qx + qs / 2, qy + qs + 29);
+
+            // Rodapé na faixa azul-marinho
+            ctx.textAlign = 'left';
+            ctx.font = '700 14px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillText('VÁLIDA EM TODO TERRITÓRIO NACIONAL', 52, 632);
+
+            // Assinatura cursiva elegante à direita
+            const sigCenterX = 885;
+            ctx.textAlign = 'center';
+            ctx.font = '34px "Great Vibes", cursive';
+            ctx.fillStyle = '#F5DF9C';
+            ctx.fillText(data.pastor, sigCenterX, 572);
+
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.8)';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(sigCenterX - 150, 616);
+            ctx.lineTo(sigCenterX + 150, 616);
+            ctx.stroke();
+
+            ctx.font = '800 13px "Plus Jakarta Sans", sans-serif';
+            ctx.fillStyle = '#F5DF9C';
+            ctx.fillText('PASTOR PRESIDENTE', sigCenterX, 625);
+        }
+
+        function renderLiveCard() {
+            const canvas = document.getElementById('live-card-canvas');
+            if (!canvas) return;
+            const highlight = currentStep > 0 && currentStep < 9 ? (stepsMeta[currentStep]?.highlight || '') : '';
+            if (currentCardSide === 'front') {
+                drawCardFrontToCanvas(canvas, highlight);
+            } else {
+                drawCardBackToCanvas(canvas, highlight);
+            }
+        }
+
+        // =========================================================================
+        // QR CODE PIX OFICIAL (BR CODE / EMVCo + CRC16-CCITT) — CHAVE 22998578815
+        // =========================================================================
+        function buildPixPayload({ key, name, city, amount, txid }) {
+            const formatField = (id, value) => `${id}${String(value.length).padStart(2, '0')}${value}`;
+            const cleanDigits = key.replace(/\D/g, '');
+            const pixKeyFormatted = cleanDigits.length === 11 ? `+55${cleanDigits}` : key;
+            const normalizeText = (str, maxLen) =>
+                str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase().slice(0, maxLen) || 'MINISTERIO';
+
+            const merchantAccountInfo = formatField('00', 'br.gov.bcb.pix') + formatField('01', pixKeyFormatted);
+            const payloadParts = [
+                formatField('00', '01'),
+                formatField('26', merchantAccountInfo),
+                formatField('52', '0000'),
+                formatField('53', '986'),
+                amount > 0 ? formatField('54', amount.toFixed(2)) : '',
+                formatField('58', 'BR'),
+                formatField('59', normalizeText(name, 25)),
+                formatField('60', normalizeText(city, 15)),
+                formatField('62', formatField('05', txid || 'CREDENCIAL01')),
+                '6304'
+            ];
+
+            const rawPayload = payloadParts.join('');
+            return rawPayload + computeCRC16(rawPayload);
+        }
+
+        function computeCRC16(payload) {
+            let crc = 0xFFFF;
+            for (let i = 0; i < payload.length; i++) {
+                crc ^= payload.charCodeAt(i) << 8;
+                for (let j = 0; j < 8; j++) {
+                    crc = (crc & 0x8000) !== 0 ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+                }
+            }
+            return crc.toString(16).toUpperCase().padStart(4, '0');
+        }
+
+        function updatePixPayloadAndQR() {
+            const amountFormatted = churchConfig.pixAmount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('pix-display-amount').textContent = amountFormatted;
+
+            const txid = generatedMatricula.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+            const brCode = buildPixPayload({
+                key: churchConfig.pixKey,
+                name: churchConfig.pixReceiver,
+                city: churchConfig.pixCity,
+                amount: churchConfig.pixAmount,
+                txid: txid
+            });
+
+            document.getElementById('pix-brcode-input').value = brCode;
+
+            const qrBox = document.getElementById('pix-qr-container');
+            qrBox.innerHTML = '';
+            new QRCode(qrBox, {
+                text: brCode,
+                width: 240,
+                height: 240,
+                colorDark: '#091B3A',
+                colorLight: '#FFFFFF',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+        }
+
+        function copyText(text, successMessage) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(successMessage, 'success');
+        }
+
+        function copyPixBrCode() {
+            copyText(document.getElementById('pix-brcode-input').value, 'Código PIX Copia e Cola copiado!');
+        }
+
+        function handleReceiptUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('receipt-label').textContent = `Comprovante: ${file.name}`;
+                showToast('Comprovante anexado com sucesso!', 'success');
+            }
+        }
+
+        function checkPaymentUnlockState() {
+            document.getElementById('confirm-pix-btn').disabled = !document.getElementById('terms-checkbox').checked;
+        }
+
+        function confirmPixPayment() {
+            if (!document.getElementById('terms-checkbox').checked) {
+                showToast('Marque a confirmação dos dados antes de liberar.', 'warn');
+                return;
+            }
+            document.getElementById('pix-payment-box').classList.add('hidden');
+            document.getElementById('unlocked-download-box').classList.remove('hidden');
+            showToast('Pagamento confirmado! PDF nativo liberado.', 'success');
+        }
+
+        // =========================================================================
+        // CONSTRUTOR DE PDF BINÁRIO NATIVO EM JAVASCRIPT PURO (ZERO ERRO EM CELULAR)
+        // =========================================================================
+        function buildNativeA4PdfBlob(canvasA4) {
+            // 1. Extrai JPEG do Canvas A4 (1654 x 2339 px)
+            const dataUrl = canvasA4.toDataURL('image/jpeg', 0.94);
+            const base64Data = dataUrl.split(',')[1];
+            const binaryStr = atob(base64Data);
+            const imgLen = binaryStr.length;
+            const imgBytes = new Uint8Array(imgLen);
+            for (let i = 0; i < imgLen; i++) {
+                imgBytes[i] = binaryStr.charCodeAt(i);
+            }
+
+            const imgW = canvasA4.width;
+            const imgH = canvasA4.height;
+            const encoder = new TextEncoder();
+
+            // 2. Monta a estrutura binária exata de um PDF 1.4 válido (A4: 595.28 x 841.89 pt)
+            const header = encoder.encode('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+
+            const obj1 = encoder.encode('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+            const obj2 = encoder.encode('2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n');
+            const obj3 = encoder.encode(
+                '3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] ' +
+                '/Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n'
+            );
+
+            const obj4Head = encoder.encode(
+                `4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} ` +
+                `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLen} >>\nstream\n`
+            );
+            const obj4Tail = encoder.encode('\nendstream\nendobj\n');
+
+            const contentStream = 'q\n595.28 0 0 841.89 0 0 cm\n/Im0 Do\nQ\n';
+            const obj5 = encoder.encode(
+                `5 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`
+            );
+
+            // Calcula offsets exatos para a tabela xref
+            const off1 = header.length;
+            const off2 = off1 + obj1.length;
+            const off3 = off2 + obj2.length;
+            const off4 = off3 + obj3.length;
+            const off5 = off4 + obj4Head.length + imgBytes.length + obj4Tail.length;
+            const xrefOffset = off5 + obj5.length;
+
+            const padOffset = (n) => String(n).padStart(10, '0');
+            const xref = encoder.encode(
+                'xref\n' +
+                '0 6\n' +
+                '0000000000 65535 f \n' +
+                `${padOffset(off1)} 00000 n \n` +
+                `${padOffset(off2)} 00000 n \n` +
+                `${padOffset(off3)} 00000 n \n` +
+                `${padOffset(off4)} 00000 n \n` +
+                `${padOffset(off5)} 00000 n \n` +
+                'trailer\n' +
+                '<< /Size 6 /Root 1 0 R >>\n' +
+                'startxref\n' +
+                `${xrefOffset}\n` +
+                '%%EOF'
+            );
+
+            // Concatena todos os blocos binários em um único Uint8Array
+            const totalSize = xrefOffset + xref.length;
+            const pdfBytes = new Uint8Array(totalSize);
+            let cursor = 0;
+            const append = (arr) => {
+                pdfBytes.set(arr, cursor);
+                cursor += arr.length;
+            };
+
+            append(header);
+            append(obj1);
+            append(obj2);
+            append(obj3);
+            append(obj4Head);
+            append(imgBytes);
+            append(obj4Tail);
+            append(obj5);
+            append(xref);
+
+            return new Blob([pdfBytes], { type: 'application/pdf' });
+        }
+
+        // Desenha marcas de corte finas nos cantos do cartão
+        function drawCornerCropMarks(ctx, x, y, w, h) {
+            const len = 18;
+            const gap = 5;
+            ctx.save();
+            ctx.strokeStyle = '#8A6212';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // Topo Esquerdo
+            ctx.moveTo(x - gap - len, y); ctx.lineTo(x - gap, y);
+            ctx.moveTo(x, y - gap - len); ctx.lineTo(x, y - gap);
+            // Topo Direito
+            ctx.moveTo(x + w + gap, y); ctx.lineTo(x + w + gap + len, y);
+            ctx.moveTo(x + w, y - gap - len); ctx.lineTo(x + w, y - gap);
+            // Base Esquerda
+            ctx.moveTo(x - gap - len, y + h); ctx.lineTo(x - gap, y + h);
+            ctx.moveTo(x, y + h + gap); ctx.lineTo(x, y + h + gap + len);
+            // Base Direita
+            ctx.moveTo(x + w + gap, y + h); ctx.lineTo(x + w + gap + len, y + h);
+            ctx.moveTo(x + w, y + h + gap); ctx.lineTo(x + w, y + h + gap + len);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Renderiza Folha A4 (1654 x 2339 px — 200 DPI) com todas as letras expostas
+        async function buildA4MasterCanvas() {
+            await rebuildCardAuthQR();
+
+            // 1. Renderiza Frente e Verso limpos (1100 x 696 px)
+            const frontCanvas = document.createElement('canvas');
+            frontCanvas.width = 1100;
+            frontCanvas.height = 696;
+            drawCardFrontToCanvas(frontCanvas, '');
+
+            const backCanvas = document.createElement('canvas');
+            backCanvas.width = 1100;
+            backCanvas.height = 696;
+            drawCardBackToCanvas(backCanvas, '');
+
+            // 2. Canvas A4 (1654 x 2339 px) com margens seguras de 110px (~14mm)
+            const a4Canvas = document.createElement('canvas');
+            a4Canvas.width = 1654;
+            a4Canvas.height = 2339;
+            const ctx = a4Canvas.getContext('2d');
+
+            const W = 1654;
+            const H = 2339;
+            const MARGIN = 110;
+            const SAFE_W = W - MARGIN * 2; // 1434px
+
+            // Fundo branco puro
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, W, H);
+
+            // Moldura sutil de margem segura
+            ctx.strokeStyle = '#EFE6D2';
+            ctx.lineWidth = 2.5;
+            ctx.strokeRect(MARGIN - 24, MARGIN - 24, SAFE_W + 48, H - (MARGIN - 24) * 2);
+
+            // Cabeçalho centralizado dentro de maxWidth: 1434px
+            wrapAndFitText(
+                ctx,
+                'CREDENCIAL MINISTERIAL — DOCUMENTO OFICIAL',
+                W / 2,
+                138,
+                SAFE_W,
+                40,
+                1,
+                34,
+                'Cinzel, serif',
+                '800',
+                '#8A6212',
+                'center'
+            );
+
+            const sizeMode = document.querySelector('input[name="pdf-size-mode"]:checked')?.value || 'cr80';
+            const formatLabel = sizeMode === 'large'
+                ? 'Formato Ampliado (16,0 × 10,1 cm)'
+                : 'Formato Oficial CR80 (8,56 × 5,40 cm)';
+
+            wrapAndFitText(
+                ctx,
+                `Matrícula: ${generatedMatricula}  |  Formato: ${formatLabel}`,
+                W / 2,
+                188,
+                SAFE_W,
+                28,
+                1,
+                21,
+                '"Plus Jakarta Sans", sans-serif',
+                '600',
+                '#3D2804',
+                'center'
+            );
+
+            // Linha dourada divisória
+            ctx.strokeStyle = '#E2BE6F';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(MARGIN + 80, 232);
+            ctx.lineTo(W - MARGIN - 80, 232);
+            ctx.stroke();
+
+            // Dimensões exatas do cartão na folha A4 (200 DPI)
+            // CR80: 677 x 427 px | Ampliado: 1260 x 797 px
+            const cardW = sizeMode === 'large' ? 1260 : 677;
+            const cardH = sizeMode === 'large' ? 797 : 427;
+            const cardX = Math.round((W - cardW) / 2);
+
+            // FRENTE DA CREDENCIAL
+            const frontTitleY = sizeMode === 'large' ? 270 : 310;
+            wrapAndFitText(ctx, 'FRENTE DA CREDENCIAL', W / 2, frontTitleY, SAFE_W, 28, 1, 22, 'Cinzel, serif', '800', '#8A6212', 'center');
+
+            const frontCardY = frontTitleY + 38;
+            ctx.drawImage(frontCanvas, cardX, frontCardY, cardW, cardH);
+            drawCornerCropMarks(ctx, cardX, frontCardY, cardW, cardH);
+
+            // VERSO DA CREDENCIAL
+            const backTitleY = frontCardY + cardH + (sizeMode === 'large' ? 68 : 115);
+            wrapAndFitText(ctx, 'VERSO DA CREDENCIAL', W / 2, backTitleY, SAFE_W, 28, 1, 22, 'Cinzel, serif', '800', '#8A6212', 'center');
+
+            const backCardY = backTitleY + 38;
+            ctx.drawImage(backCanvas, cardX, backCardY, cardW, cardH);
+            drawCornerCropMarks(ctx, cardX, backCardY, cardW, cardH);
+
+            // RODAPÉ COM INSTRUÇÕES COMPLETAS DENTRO DA MARGEM SEGURA
+            const footerY = backCardY + cardH + (sizeMode === 'large' ? 58 : 110);
+            wrapAndFitText(
+                ctx,
+                'INSTRUÇÕES PARA IMPRESSÃO E PLASTIFICAÇÃO',
+                W / 2,
+                footerY,
+                SAFE_W,
+                26,
+                1,
+                20,
+                '"Plus Jakarta Sans", sans-serif',
+                '800',
+                '#8A6212',
+                'center'
+            );
+
+            wrapAndFitText(
+                ctx,
+                '1. Imprima esta folha A4 colorida em escala 100% (Tamanho Real), preferencialmente em papel fotográfico ou couchê de alta gramatura.',
+                W / 2,
+                footerY + 34,
+                SAFE_W,
+                24,
+                2,
+                17,
+                '"Plus Jakarta Sans", sans-serif',
+                '600',
+                '#3D2804',
+                'center'
+            );
+
+            wrapAndFitText(
+                ctx,
+                '2. Recorte nas marcas dos cantos, alinhe frente e verso e plastifique com polaseal padrão RG/CR80 (0,05mm ou 0,07mm).',
+                W / 2,
+                footerY + 86,
+                SAFE_W,
+                24,
+                2,
+                17,
+                '"Plus Jakarta Sans", sans-serif',
+                '600',
+                '#3D2804',
+                'center'
+            );
+
+            return a4Canvas;
+        }
+
+        async function exportNativePDF(openInNewTab = false) {
+            const btn = document.getElementById('download-pdf-btn');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span>Gerando PDF Colorido...</span>';
+
+            try {
+                const a4Canvas = await buildA4MasterCanvas();
+                const pdfBlob = buildNativeA4PdfBlob(a4Canvas);
+                const blobUrl = URL.createObjectURL(pdfBlob);
+
+                const safeName = (document.getElementById('field-nome').value.trim() || 'Membro')
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]/g, '_');
+                const fileName = `Credencial_Ministerial_${safeName}.pdf`;
+
+                if (openInNewTab) {
+                    const win = window.open(blobUrl, '_blank');
+                    if (!win) {
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.target = '_blank';
+                        a.rel = 'noopener';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                    showToast('PDF aberto em nova aba!', 'success');
+                } else {
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    showToast('Download do PDF colorido iniciado!', 'success');
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Não foi possível gerar o PDF. Tente abrir em nova aba.', 'warn');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        async function downloadSinglePNG(side) {
+            await rebuildCardAuthQR();
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 1100;
+            tempCanvas.height = 696;
+            if (side === 'front') {
+                drawCardFrontToCanvas(tempCanvas, '');
+            } else {
+                drawCardBackToCanvas(tempCanvas, '');
+            }
+            const link = document.createElement('a');
+            link.download = `Credencial_${side === 'front' ? 'Frente' : 'Verso'}_${generatedMatricula}.png`;
+            link.href = tempCanvas.toDataURL('image/png', 1.0);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast(`Imagem da ${side === 'front' ? 'Frente' : 'Verso'} salva em PNG!`, 'success');
+        }
+
+        // =========================================================================
+        // CONFIGURAÇÕES DA SECRETARIA & NOTIFICAÇÕES
+        // =========================================================================
+        function openSettingsModal() {
+            document.getElementById('cfg-pix-amount').value = churchConfig.pixAmount.toFixed(2);
+            document.getElementById('cfg-pix-receiver').value = churchConfig.pixReceiver;
+            document.getElementById('cfg-pix-city').value = churchConfig.pixCity;
+            document.getElementById('cfg-pastor-name').value = churchConfig.pastorSignature;
+            document.getElementById('cfg-validity-years').value = churchConfig.validityYears;
+            document.getElementById('settings-modal').classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+
+        function saveSettings() {
+            const val = parseFloat(document.getElementById('cfg-pix-amount').value);
+            if (!isNaN(val) && val >= 0) churchConfig.pixAmount = val;
+            churchConfig.pixReceiver = document.getElementById('cfg-pix-receiver').value.trim() || 'SECRETARIA MINISTERIAL';
+            churchConfig.pixCity = document.getElementById('cfg-pix-city').value.trim() || 'MACAE';
+            churchConfig.pastorSignature = document.getElementById('cfg-pastor-name').value.trim() || 'Presidência Ministerial';
+
+            const years = parseInt(document.getElementById('cfg-validity-years').value, 10);
+            if (!isNaN(years) && years >= 1) {
+                churchConfig.validityYears = years;
+                syncValidadeFromEmissao();
+            }
+
+            renderLiveCard();
+            if (currentStep === 9) {
+                drawCardFrontToCanvas(document.getElementById('review-front-canvas'), '');
+                drawCardBackToCanvas(document.getElementById('review-back-canvas'), '');
+            }
+            updatePixPayloadAndQR();
+            closeSettingsModal();
+            showToast('Configurações da Secretaria salvas!', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-emerald-900 text-emerald-50 border-emerald-500',
+                warn: 'bg-amber-900 text-amber-50 border-amber-400',
+                info: 'bg-navy-900 text-gold-200 border-gold-400'
+            };
+            toast.className = `pointer-events-auto px-4 py-3 rounded-2xl border shadow-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${colors[type] || colors.info}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-8px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
