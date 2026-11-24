@@ -1615,6 +1615,28 @@
         correctLevel: QRCode.CorrectLevel.M
       });
     }
+    const CHURCH_INSTAGRAM_URL = 'https://www.instagram.com/getmorrodesantana?lqvp=MWF3aDFoOGFkMDBuNw==';
+
+function updateAuthQRCode() {
+  const container = document.getElementById('authQrContainer') || document.getElementById('card-back-qr');
+  if (!container) return;
+
+  container.innerHTML = '';
+
+  new QRCode(container, {
+    text: CHURCH_INSTAGRAM_URL,
+    width: 112,
+    height: 112,
+    colorDark: '#0A1628',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+
+  setTimeout(() => {
+    container.removeAttribute('title');
+    container.querySelectorAll('img, canvas').forEach((el) => el.removeAttribute('title'));
+  }, 50);
+}
 
     function fallbackCopyText(text, successMsg) {
       const temp = document.createElement('textarea');
