@@ -1530,26 +1530,30 @@
       const CHURCH_INSTAGRAM_URL = 'https://www.instagram.com/getmorrodesantana?lqvp=MWF3aDFoOGFkMDBuNw==';
 
 function updateAuthQRCode() {
-  const container = document.getElementById('card-qr-container');
-  if (!container) return;
+  try {
+    const container = document.getElementById('card-qr-container');
+    if (!container || typeof QRCode === 'undefined') return;
 
-  container.innerHTML = '';
+    container.innerHTML = '';
 
-  if (typeof QRCode === 'undefined') return;
+    new QRCode(container, {
+      text: CHURCH_INSTAGRAM_URL,
+      width: 84,
+      height: 84,
+      colorDark: '#0A1628',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M
+    });
 
-  new QRCode(container, {
-    text: CHURCH_INSTAGRAM_URL,
-    width: 84,
-    height: 84,
-    colorDark: '#0A1628',
-    colorLight: '#FFFFFF',
-    correctLevel: QRCode.CorrectLevel.M
-  });
-
-  setTimeout(() => {
-    container.removeAttribute('title');
-    container.querySelectorAll('img, canvas').forEach((el) => el.removeAttribute('title'));
-  }, 50);
+    setTimeout(() => {
+      try {
+        container.removeAttribute('title');
+        container.querySelectorAll('img, canvas').forEach((el) => el.removeAttribute('title'));
+      } catch (e) {}
+    }, 50);
+  } catch (err) {
+    console.warn('Erro ao atualizar QR Code:', err);
+  }
 }
 
     // =========================================================================
